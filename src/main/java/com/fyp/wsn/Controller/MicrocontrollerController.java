@@ -19,6 +19,7 @@ import java.util.Collection;
 @RestController
 // This is how you map your end points to entire class
 @RequestMapping("/microcontroller")
+@CrossOrigin()
 //This annotation for auto generate API documentation
 @Api(
         name = "microcontroller data API",

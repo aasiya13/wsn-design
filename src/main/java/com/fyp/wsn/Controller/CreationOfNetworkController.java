@@ -20,6 +20,7 @@ import java.util.Collection;
 @RestController
 // This is how you map your end points to entire class
 @RequestMapping("/sensornetwork")
+@CrossOrigin()
 //This annotation for auto generate API documentation
 @Api(
         name = "sensornetwork data API",
