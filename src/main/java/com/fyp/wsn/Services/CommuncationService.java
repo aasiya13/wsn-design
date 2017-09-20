@@ -21,7 +21,7 @@ public class CommuncationService {
 
         return this.communicationDAO.getAllCommunications();
     }
-
+    // nadith edited
     public Communication getCommunicationById(String id){
 
         return this.communicationDAO.getCommunicationById(id);
