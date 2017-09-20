@@ -31,7 +31,7 @@ public class CodeGenForNetwork {
     private HashMap<String,String> define_tags;
     private HashMap<String,Integer> pin_usage;
 
-    //get the network configurtion
+    //get the network configurtion fucntion
     public CodeGenForNetwork(String list, SensorNodeDAO sensorNodeDAO, MicrocontrollerDAO microcontrollerDAO, SensorNetworkDAO sensorNetworkDAO) {
 
         ArrayList<String> temp=new ArrayList<>();
