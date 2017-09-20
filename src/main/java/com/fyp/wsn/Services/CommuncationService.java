@@ -19,7 +19,6 @@ public class CommuncationService {
 
     public Collection<Communication> getAllCommunications(){
 
-//        insertfunction();
         return this.communicationDAO.getAllCommunications();
     }
 

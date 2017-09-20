@@ -51,10 +51,7 @@ public class CommunicationDAO {
 
         temp_com.setDisplay_name(com.getDisplay_name());
         temp_com.setModel_name(com.getModel_name());
-        temp_com.setColor(com.getColor());
         temp_com.setConfiguration(com.getConfiguration());
-        temp_com.setRated_current(com.getRated_current());
-        temp_com.setPower_supply(com.getPower_supply());
         temp_com.setDescription(com.getDescription());
 
         temp_com.setCpp_connect(com.getCpp_connect());
@@ -62,12 +59,7 @@ public class CommunicationDAO {
         temp_com.setCpp_receive(com.getCpp_receive());
         temp_com.setCpp_setup(com.getCpp_setup());
         temp_com.setCpp_global(com.getCpp_global());
-
-        temp_com.setPython_connect(com.getPython_connect());
-        temp_com.setPython_global(com.getPython_global());
-        temp_com.setPython_receive(com.getPython_receive());
-        temp_com.setPython_send(com.getPython_send());
-        temp_com.setPython_setup(com.getPython_setup());
+        temp_com.setCpp_disconnect(com.getCpp_disconnect());
         temp_com.setPin_map(com.getPin_map());
 
         communicationRepository.save(temp_com);
