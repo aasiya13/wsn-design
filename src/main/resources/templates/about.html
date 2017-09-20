@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head  th:replace="fragments/resource :: head">
+</head>
+
+<body>
+
+<!--Load css files-->
+<th:block th:include="fragments/resource :: nav_bar"></th:block>
+
+<!--Load scripts   -->
+<th:block th:include="fragments/resource :: scripts"></th:block>
+
+<div class="ui container">
+
+    <br>
+    <br>
+    <div class="image content">
+
+        <div class="ui medium circular border spaced image">
+            <img src="/image/asela.png"  data-title="Asela Dasanayaka" data-content="Worked on Front-end" class="ui image" data-position="top left">
+        </div>
+        <div class="ui medium circular border spaced image">
+            <img src="/image/nadith.jpg" data-title="Nadith Premerathne" data-content="Worked on back-end" class="ui image" data-position="top left">
+        </div>
+        <div class="ui medium circular border spaced image">
+            <img src="/image/rosen.jpg" data-title="Rosen Silva" data-content="Designed Architecture" class="ui image" data-position="top left">
+        </div>
+        <div class="description">
+            <br>
+            <br>
+            <div class="ui header">Meet the team !</div>
+            <h5>We are group of undergraduates of faculty of engineering, University of Peradeniya.</h5>
+        </div>
+    </div>
+
+</div>
+
+</div>
+
+<script model_name="text/javascript">
+    $('.ui.image').popup();
+</script>>
+
+</body>
+</html>

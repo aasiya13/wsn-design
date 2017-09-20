@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head">
+    <!--meta data-->
+    <meta display_name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" charset="UTF-8"/>
+    <!--title-->
+    <title th:text="${title}">WSN Design Studio</title>
+
+    <!--STYLES-->
+    <link rel="stylesheet" href="/static/style/bootstrap.min.css" th:href="@{/style/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="/static/style/semantic.min.css" th:href="@{/style/semantic.min.css}"/>
+    <link rel="stylesheet" href="/static/style/bootstrap-grid.min.css" th:href="@{/style/bootstrap-grid.min.css}"/>
+    <link rel="stylesheet" href="/static/style/bootstrap-reboot.min.css" th:href="@{/style/bootstrap-reboot.min.css}"/>
+    <link rel="stylesheet" href="/static/style/custom_one.css" th:href="@{/style/custom_one.css}"/>
+
+
+</head>
+
+<body>
+
+<div th:fragment="nav_bar">
+
+    <div class="navbar nav_custom">
+        <div class="navbar-inner">
+            <div class="container">
+                <ul class="nav brand_custom">
+                    <li  >
+                        <a  class="nav_heading">WSN Design Studio</a>
+                    </li>
+
+                    <li >
+                        <a class="nav_heading"  href="/">Create Sensor Node</a>
+                    </li>
+
+                    <li >
+                        <a  class="nav_heading" href="/create/network">Create Network</a>
+                    </li>
+                    <li >
+                        <a  class="nav_heading" href="/create/sensor">Add Sensor</a>
+                    </li>
+                    <li >
+                        <a  class="nav_heading" href="/create/microcontroller">Add Microcontroller</a>
+                    </li>
+
+                    <li >
+                        <a class="nav_heading" href="/about" >About Us</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div th:fragment="scripts">
+
+    <!--JavaScripts-->
+
+    <script src="/static/js/jquery-3.2.1.min.js" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script src="/static/js/semantic.min.js" th:src="@{/js/semantic.min.js}"></script>
+    <script src="/static/js/tether.min.js" th:src="@{/js/tether.min.js}"></script>
+    <script src="/static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
+    <!--<script src="https://npmcdn.com/bootstrap@4.0.0-alpha.5/dist/js/bootstrap.min.js"></script>-->
+    <script src="/static/js/d3.v4.min.js" th:src="@{/js/d3.v4.min.js}"></script>
+    <script src="/static/js/d3.v2.js" th:src="@{/js/d3.v2.js}"></script>
+    <script src="/static/js/jquery-ui.js" th:src="@{/js/jquery-ui.js}"></script>
+
+
+</div>
+
+</body>
+
+</html>

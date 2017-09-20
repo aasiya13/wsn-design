@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head  th:replace="fragments/resource :: head">
+</head>
+
+<body >
+
+<!--Load css files-->
+<th:block th:include="fragments/resource :: nav_bar"></th:block>
+
+<!--Load scripts   -->
+<th:block th:include="fragments/resource :: scripts"></th:block>
+
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+<!--wizard-->
+
+<div class="container">
+    <div class="stepwizard ">
+        <div class="stepwizard-row setup-panel">
+            <div class="stepwizard-step">
+                <a href="#step-1" model_name="button" class="btn btn-primary btn-circle">1</a>
+                <p>Step 1</p>
+            </div>
+            <div class="stepwizard-step">
+                <a href="#step-2" model_name="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                <p>Step 2</p>
+            </div>
+            <div class="stepwizard-step">
+                <a href="#step-3" model_name="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                <p>Step 3</p>
+            </div>
+        </div>
+    </div>
+    <div  class="whiteborder">
+        <div class="row setup-content" id="step-1">
+
+            <h5><strong>Basic Details of Microcontroller </strong></h5>
+
+            <div class="row">
+                <div class="col-md-10">
+                    <label >Microcontroller Modal Name</label>
+                    <input model_name="text" style="width: 1000px;" class="form-control" id="micro_modal_name" placeholder="Enter Microcontroller  Modal Name...">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-10">
+                    <label >Microcontroller Displayed Name</label>
+                    <input model_name="text" style="width: 1000px;" class="form-control" id="micro_display_name" placeholder="Enter Microcontroller  Displayed Name...">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-10">
+                    <label >Microcontroller Rated Current</label>
+                    <input model_name="text" style="width: 1000px;" class="form-control" id="micro_rated_current" placeholder="Enter Microcontroller  Rated Current...">
+                </div>
+            </div>                <hr>
+            <div class="row">
+                <div class="col-md-10">
+                    <label >Required power supply</label>
+                    <input model_name="text" style="width: 1000px;" class="form-control" id="micro_required_power_supply" placeholder="Enter Required power supply...">
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-10">
+                    <label >Compatible language </label>
+                    <select id="support_language">
+                        <option>Select programming language</option>
+                        <option value="cpp">C++</option>
+                        <option value="python">Python</option>
+                    </select>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-10">
+                    <label >Microcontroller Description</label>
+                    <textarea id="micro_description" style="width: 1000px;" placeholder="Enter Microcontroller Description..."></textarea>
+                </div>
+            </div>
+            <ul class="list-inline pull-right">
+                <li><button model_name="button" class="btn btn-primary nextBtn next-step custom_button_1">Continue</button></li>
+            </ul>
+
+        </div>
+        <div class="row setup-content" id="step-2">
+
+            <h5><strong>Microcontroller pin details</strong></h5>
+
+            <div class="row clearfix">
+                <div class="col-md-12 table-responsive">
+                    <table class="table table-bordered table-hover table-sortable custom_table_sensor_pin" id="tab_logic">
+                        <thead>
+                        <tr >
+                            <th class="text-center">
+                                Pin Name
+                            </th>
+                            <th class="text-center">
+                                Pin tag
+                            </th>
+                            <th>
+                                <a id="add_row" class="btn btn-success ">Add Pin</a>
+                            </th>
+                            <th class="text-center" style="border-top: 1px solid #ffffff; border-right: 1px solid #ffffff;">
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id='addr0' data-id="0" class="hidden">
+                            <td data-display_name="pin_name">
+                                <input model_name="text" id='pin_name0'  placeholder='Pin Name' class="form-control"/>
+                            </td>
+                            <td data-display_name="pin_tag">
+                                <select id="pin_tag0">
+                                    <option>Select Tag</option>
+                                    <option value="DIGITAL_INPUT">Digital Input</option>
+                                    <option value="ANALOG_INPUT">Analog Input</option>
+                                    <option value="RX">RX</option>
+                                    <option value="TX">TX</option>
+                                    <option value="UART">UART</option>
+                                    <option value="I2C">I2C</option>
+                                    <option value="PWM">PWM</option>
+                                    <option value="VCC">VCC</option>
+                                    <option value="GND">GND</option>
+                                    <option value="ENABLE">Enable</option>
+                                </select>
+
+                                <!--<input model_name="text" display_name='pin_tag0' placeholder='Pin tag' class="form-control"/>-->
+                            </td>
+
+
+                            <td data-display_name="del">
+                                <button display_name ="del0" class='btn btn-danger row-remove ' model_name="button">Delete Pin</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <ul class="list-inline pull-right">
+                <li><button model_name="button" class="btn btn-primary nextBtn next-step custom_button_2">Continue</button></li>
+            </ul>
+
+        </div>
+        <div class="row setup-content" id="step-3">
+            <h5><strong>Microcontroller functions</strong></h5>
+
+            <table style="width: 100%;margin-top: 30px;">
+                <tbody>
+
+                <tr>
+                    <td >
+                        <label  style="width: 100%">Microcontroller initialization function</label>
+                        <textarea id="micro_initialize" style="width: 100%; height: 80px;" placeholder="Microcontroller initialize function..." style="width: 100%"></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <select id="network_type" style="width: 100%;">
+                            <option >Select Technology</option>
+                            <option display_name="wifi">Wi-Fi</option>
+                            <option display_name="lora">Lora</option>
+                        </select>
+                    </td>
+                    <td>
+                        <textarea id="micro_network_function" style="width: 100%; height: 80px;" placeholder="Microcontroller network function..." style="width: 100%"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <ul class="list-inline pull-right">
+                <li><button id="add_micro" class="btn btn-primary  custom_button_2">Finish and save</button></li>
+            </ul>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+<script>
+
+
+        //dynamic table
+        var no_of_pins = 0;
+
+        $("#add_row").on("click", function() {
+            // Dynamic Rows Code
+
+            // Get max row id and set new id
+
+            $.each($("#tab_logic tr"), function() {
+                if (parseInt($(this).data("id")) > no_of_pins) {
+                    no_of_pins = parseInt($(this).data("id"));
+                }
+            });
+            no_of_pins++;
+
+            var tr = $("<tr></tr>", {
+                id: "addr"+no_of_pins,
+                "data-id": no_of_pins
+            });
+
+            // loop through each td and create new elements with display_name of no_of_pins
+            $.each($("#tab_logic tbody tr:nth(0) td"), function() {
+                var cur_td = $(this);
+
+                var children = cur_td.children();
+
+                // add new td and element if it has a nane
+                if ($(this).data("display_name") != undefined) {
+                    var td = $("<td></td>", {
+                        "data-display_name": $(cur_td).data("display_name")
+                    });
+
+                    var c = $(cur_td).find($(children[0]).prop('tagName')).clone().val("");
+                    c.attr("id", $(cur_td).data("display_name") + no_of_pins);
+                    c.appendTo($(td));
+                    td.appendTo($(tr));
+                } else {
+                    var td = $("<td></td>", {
+                        'text': $('#tab_logic tr').length
+                    }).appendTo($(tr));
+                }
+            });
+
+
+            // add the new row
+            $(tr).appendTo($('#tab_logic'));
+
+            $(tr).find("td button.row-remove").on("click", function() {
+                $(this).closest("tr").remove();
+            });
+        });
+
+
+        // Sortable Code
+        var fixHelperModified = function(e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+
+            $helper.children().each(function(index) {
+                $(this).width($originals.eq(index).width())
+            });
+
+            return $helper;
+        };
+
+        $(".table-sortable tbody").sortable({
+            helper: fixHelperModified
+        }).disableSelection();
+
+        $(".table-sortable thead").disableSelection();
+
+
+
+        $("#add_row").trigger("click");
+
+//    wizard
+        var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+
+        allWells.hide();
+
+        navListItems.click(function (e) {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this);
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.removeClass('btn-primary').addClass('btn-default');
+                $item.addClass('btn-primary');
+                allWells.hide();
+                $target.show();
+                $target.find('input:eq(0)').focus();
+            }
+        });
+
+        allNextBtn.click(function(){
+            var curStep = $(this).closest(".setup-content"),
+                curStepBtn = curStep.attr("id"),
+                nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                curInputs = curStep.find("input[model_name='text'],input[model_name='url']"),
+                isValid = true;
+
+            $(".form-group").removeClass("has-error");
+            for(var i=0; i<curInputs.length; i++){
+                if (!curInputs[i].validity.valid){
+                    isValid = false;
+                    $(curInputs[i]).closest(".form-group").addClass("has-error");
+                }
+            }
+
+            if (isValid)
+                nextStepWizard.removeAttr('disabled').trigger('click');
+        });
+
+        $('div.setup-panel div a.btn-primary').trigger('click');
+
+    /*
+     * Set data set ready for microcontroller
+     *
+     * */
+    function microcontroller_data_set() {
+
+        var model_name = $('#micro_modal_name').val();
+        var display_name = $('#micro_display_name').val();
+        var rated_current = $('#micro_rated_current').val();
+        var power_supply = $('#micro_required_power_supply').val();
+        var description = $('#micro_description').val();
+        var color = '#e49191';
+
+        var suported_language  = $('#support_language').val();
+
+        var pin_map ='';
+
+        for(var i=0;i<no_of_pins;i++){
+            var pin_name = $("#pin_name"+i).val();
+            var pin_tag_name = $("#pin_tag"+i).val();
+            pin_map += (pin_name+'-'+pin_tag_name+',');
+        }
+        var name_last = $("#pin_name"+no_of_pins).val();
+        var type_last = $("#pin_tag"+no_of_pins).val();
+        pin_map += (name_last+'-'+type_last);
+
+        var initialize = $("#micro_initialize").val();
+
+        var network_technology = $("#network_type").val();
+        var wifi_network ='';
+        var lora_network ='';
+
+        var network_function = $('#micro_network_function').val();
+
+        if (network_technology == 'wifi'){
+            wifi_network += network_function;
+        }else if(network_technology == 'lora'){
+            lora_network += network_function;
+        }
+
+        var microcontroller = {
+            "model_name":model_name, "display_name":display_name,"rated_current":rated_current,"power_supply":power_supply,
+            "description":description,"supported_lan":suported_language,"pin_map":pin_map,"initialize":initialize,
+            "wifi_network":wifi_network,"lora_network":lora_network, "color":color
+        }
+
+        console.log(microcontroller);
+
+        $.ajax({
+            type: "POST",
+            url:  "http://localhost:8080/microcontroller",
+            contentType:'application/json',
+            data: JSON.stringify(microcontroller),
+            success: function(){
+                alert("Microcontroller Added Successfully");
+            }
+        });
+    }
+    $('#add_micro').click(microcontroller_data_set);
+
+</script>
+
+</body>
+</html>

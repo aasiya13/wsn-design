@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head  th:replace="fragments/resource :: head">
+</head>
+
+<body>
+
+<!--Load css files-->
+<th:block th:include="fragments/resource :: nav_bar"></th:block>
+
+<!--Load scripts   -->
+<th:block th:include="fragments/resource :: scripts"></th:block>
+
+<div class="container code_download_table">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Node Name</th>
+            <th>Download code</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="node : ${nodes}">
+            <td th:text="${node}"></td>
+            <!--<td ><a class="form-control btn btn-register" th:text="${node}" th:href="@{|/output/${node}_code.ino|}"> </a></td>-->
+            <td ><a class="form-control btn btn-register" th:text="${node}" th:href="@{|/output/${node}_code.ino|}"> </a></td>
+        </tr>
+    </table>
+
+
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

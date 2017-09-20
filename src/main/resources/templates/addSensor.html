@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head  th:replace="fragments/resource :: head">
+</head>
+
+<body >
+
+<!--Load css files-->
+<th:block th:include="fragments/resource :: nav_bar"></th:block>
+
+<!--Load scripts   -->
+<th:block th:include="fragments/resource :: scripts"></th:block>
+
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+<!--wizard-->
+
+<div class="container">
+    <div class="stepwizard ">
+        <div class="stepwizard-row setup-panel">
+            <div class="stepwizard-step">
+                <a href="#step-1" model_name="button" class="btn btn-primary btn-circle">1</a>
+                <p>Step 1</p>
+            </div>
+            <div class="stepwizard-step">
+                <a href="#step-2" model_name="button" class="btn btn-default btn-circle" disabled="disabled">2</a>
+                <p>Step 2</p>
+            </div>
+            <div class="stepwizard-step">
+                <a href="#step-3" model_name="button" class="btn btn-default btn-circle" disabled="disabled">3</a>
+                <p>Step 3</p>
+            </div>
+        </div>
+    </div>
+    <div  class="whiteborder">
+        <div class="row setup-content" id="step-1">
+
+                <h5><strong>Basic Details of Sensor </strong></h5>
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <label >Sensor Model Name</label>
+                        <input model_name="text" style="width: 1000px;" class="form-control" id="sensor_modal_name" placeholder="Enter Sensor  Model Name...">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-10">
+                        <label >Sensor Displayed Name</label>
+                        <input model_name="text" style="width: 1000px;" class="form-control" id="sensor_display_name" placeholder="Enter Sensor  Displayed Name...">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-10">
+                        <label >Sensor Rated Current</label>
+                        <input model_name="text" style="width: 1000px;" class="form-control" id="sensor_rated_current" placeholder="Enter Sensor  Rated Current...">
+                    </div>
+                </div>                <hr>
+                <div class="row">
+                    <div class="col-md-10">
+                        <label >Required power supply</label>
+                        <input model_name="text" style="width: 1000px;" class="form-control" id="sensor_required_power_supply" placeholder="Enter Required power supply...">
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-10">
+                        <label >Sensor Description</label>
+                        <textarea id="sensor_description" style="width: 1000px;" placeholder="Enter Sensor Description..."></textarea>
+                    </div>
+                </div>
+                <ul class="list-inline pull-right">
+                    <li><button model_name="button" class="btn btn-primary nextBtn next-step custom_button_1">Continue</button></li>
+                </ul>
+
+        </div>
+        <div class="row setup-content" id="step-2">
+
+            <h5><strong>Sensor pin details</strong></h5>
+
+            <div class="row clearfix">
+                <div class="col-md-12 table-responsive">
+                    <table class="table table-bordered table-hover table-sortable custom_table_sensor_pin" id="tab_logic">
+                        <thead>
+                        <tr >
+                            <th class="text-center">
+                                Pin Type
+                            </th>
+                            <th class="text-center">
+                                How many pins
+                            </th>
+                            <th>
+                                <a id="add_row" class="btn btn-success ">Add Pin model_name</a>
+                            </th>
+                            <th class="text-center" style="border-top: 1px solid #ffffff; border-right: 1px solid #ffffff;">
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr id='addr0' data-id="0" class="hidden">
+                            <td data-display_name="type_of_tag">
+
+                                <select id="type_of_tag0">
+                                    <option>Select Pin Type</option>
+                                    <option value="VCC">VCC</option>
+                                    <option value="DIGITAL_INPUT">DIGITAL</option>
+                                    <option value="ANALOG_INPUT">ANALOG</option>
+                                    <option value="GND">GND</option>
+                                </select>
+                            </td>
+                            <td data-display_name="no_of_tag">
+                                <input model_name="number" id='no_of_tag0' placeholder='How many pins' class="form-control"/>
+                            </td>
+
+                            <td data-display_name="del">
+                                <button display_name ="del0" class='btn btn-danger row-remove ' model_name="button">Delete Pin</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <ul class="list-inline pull-right">
+                <li><button model_name="button" class="btn btn-primary nextBtn next-step custom_button_2">Continue</button></li>
+            </ul>
+
+        </div>
+        <div class="row setup-content" id="step-3">
+            <h5><strong>Sensor functions</strong></h5>
+
+            <table style="width: 100%;margin-top: 30px;">
+                <tbody>
+                <tr>
+                    <td>
+                        <label  style="width: 100%">Microcontroller platform</label>
+                        <select id="micro_platform" style="width: 100%;">
+                        <option >Select Platform</option>
+                        <option value="cpp">Esp8266</option>
+                        <option value="python">Raspberry pi</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <td >
+                        <label  style="width: 100%">Header files</label>
+                        <textarea id="sensor_header_files" style="width: 100%; height: 80px;" placeholder="Sensor header files..." style="width: 100%"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td >
+                        <label  style="width: 100%">Initialize function</label>
+                        <textarea id="sensor_init_func" style="width: 100%; height: 80px;" placeholder="Sensor initialize function..." style="width: 100%"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td >
+                        <label  style="width: 100%">Sensor reading function</label>
+                        <textarea id="sensor_reading_func" style="width: 100%; height: 80px;" placeholder="Sensor reading function..." style="width: 100%"></textarea>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <ul class="list-inline pull-right">
+                <li><button id="add_sensor" class="btn btn-primary  custom_button_2">Finish and save</button></li>
+            </ul>
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+
+<script>
+
+
+
+//dynamic table
+
+        var no_of_pin_types = 0;
+
+        $("#add_row").on("click", function() {
+            // Dynamic Rows Code
+
+            // Get max row id and set new id
+
+            $.each($("#tab_logic tr"), function() {
+                if (parseInt($(this).data("id")) > no_of_pin_types) {
+                    no_of_pin_types = parseInt($(this).data("id"));
+                }
+            });
+            no_of_pin_types++;
+
+            var tr = $("<tr></tr>", {
+                id: "addr"+no_of_pin_types,
+                "data-id": no_of_pin_types
+            });
+
+            // loop through each td and create new elements with display_name of no_of_pin_types
+            $.each($("#tab_logic tbody tr:nth(0) td"), function() {
+                var cur_td = $(this);
+
+                var children = cur_td.children();
+
+                // add new td and element if it has a nane
+                if ($(this).data("display_name") != undefined) {
+                    var td = $("<td></td>", {
+                        "data-display_name": $(cur_td).data("display_name")
+                    });
+
+                    var c = $(cur_td).find($(children[0]).prop('tagName')).clone().val("");
+                    c.attr("id", $(cur_td).data("display_name") + no_of_pin_types);
+                    c.appendTo($(td));
+                    td.appendTo($(tr));
+                } else {
+                    var td = $("<td></td>", {
+                        'text': $('#tab_logic tr').length
+                    }).appendTo($(tr));
+                }
+            });
+
+
+            // add the new row
+            $(tr).appendTo($('#tab_logic'));
+
+            $(tr).find("td button.row-remove").on("click", function() {
+                $(this).closest("tr").remove();
+            });
+        });
+
+
+        // Sortable Code
+        var fixHelperModified = function(e, tr) {
+            var $originals = tr.children();
+            var $helper = tr.clone();
+
+            $helper.children().each(function(index) {
+                $(this).width($originals.eq(index).width())
+            });
+
+            return $helper;
+        };
+
+        $(".table-sortable tbody").sortable({
+            helper: fixHelperModified
+        }).disableSelection();
+
+        $(".table-sortable thead").disableSelection();
+
+
+
+        $("#add_row").trigger("click");
+
+//    wizard
+        var navListItems = $('div.setup-panel div a'),
+            allWells = $('.setup-content'),
+            allNextBtn = $('.nextBtn');
+
+        allWells.hide();
+
+        navListItems.click(function (e) {
+            e.preventDefault();
+            var $target = $($(this).attr('href')),
+                $item = $(this);
+
+            if (!$item.hasClass('disabled')) {
+                navListItems.removeClass('btn-primary').addClass('btn-default');
+                $item.addClass('btn-primary');
+                allWells.hide();
+                $target.show();
+                $target.find('input:eq(0)').focus();
+            }
+        });
+
+        allNextBtn.click(function(){
+            var curStep = $(this).closest(".setup-content"),
+                curStepBtn = curStep.attr("id"),
+                nextStepWizard = $('div.setup-panel div a[href="#' + curStepBtn + '"]').parent().next().children("a"),
+                curInputs = curStep.find("input[model_name='text'],input[model_name='url']"),
+                isValid = true;
+
+            $(".form-group").removeClass("has-error");
+            for(var i=0; i<curInputs.length; i++){
+                if (!curInputs[i].validity.valid){
+                    isValid = false;
+                    $(curInputs[i]).closest(".form-group").addClass("has-error");
+                }
+            }
+
+            if (isValid)
+                nextStepWizard.removeAttr('disabled').trigger('click');
+        });
+
+        $('div.setup-panel div a.btn-primary').trigger('click');
+
+    
+    
+    /*
+    * 
+    * Set data set ready for add sensor 
+    * 
+    * */
+    function add_sensor_data_set() {
+        var model_name = $('#sensor_modal_name').val();
+        var display_name = $('#sensor_display_name').val();
+        var rated_current = $('#sensor_rated_current').val();
+        var power_supply = $('#sensor_required_power_supply').val();
+        var description = $('#sensor_description').val();
+        var color = '#a6bbce'
+        var configuration ='';
+
+        for(var i=0;i<no_of_pin_types;i++){
+            var pin_name = $("#type_of_tag"+i).val();
+            var qty = $("#no_of_tag"+i).val();
+            configuration += (pin_name+'-'+qty+',');
+        }
+        var type_last = $("#type_of_tag"+no_of_pin_types).val();
+        var qty_last = $("#no_of_tag"+no_of_pin_types).val();
+        configuration += (type_last+'-'+qty_last);
+
+        var cpp_header='';
+        var cpp_initialize='';
+        var cpp_reading='';
+        var python_header='';
+        var python_initialize='';
+        var python_reading='';
+
+        var platform = $('#micro_platform').val();
+        var header = $('#sensor_header_files').val();
+        var initialize = $('#sensor_init_func').val();
+        var reading = $('#sensor_reading_func').val();
+
+
+
+        if (platform == 'cpp'){
+            cpp_header += header;
+            cpp_initialize += initialize;
+            cpp_reading += reading;
+        }else if(platform == 'python'){
+            python_header += header;
+            python_initialize += initialize;
+            python_reading += reading;
+        }
+
+        var sensor = {
+            "model_name":model_name,"display_name":display_name,"rated_current":rated_current,
+            "power_supply":power_supply,"description":description,"configuration":configuration,"cpp_includes":cpp_header,
+            "cpp_initialize":cpp_initialize,"cpp_function":cpp_reading,"python_includes":python_header,
+            "python_initialize":python_initialize,"python_function":python_reading,"color":color
+        };
+
+        console.log(sensor);
+
+        $.ajax({
+            type: "POST",
+            url:  "http://localhost:8080/sensors",
+            contentType:'application/json',
+            data: JSON.stringify(sensor),
+            success: function(){
+                alert("sensor Added Successfully");
+            }
+        });
+
+    }
+
+    $('#add_sensor').click(add_sensor_data_set);
+
+
+</script>
+
+</body>
+</html>

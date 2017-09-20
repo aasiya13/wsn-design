@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="fragments/resource :: head">
+</head>
+
+<body>
+
+<!--Load css files-->
+<th:block th:include="fragments/resource :: nav_bar"></th:block>
+
+<!--Load scripts   -->
+<th:block th:include="fragments/resource :: scripts"></th:block>
+
+
+<!--Side bar with microcontrollers & sensors -->
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+<div class="container">
+
+    <div class="nav-side-menu">
+        <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
+
+        <div class="menu-list">
+
+            <ul id="menu-content" class="menu-content collapse out">
+
+                <!--Microcontrollers-->
+                <li data-toggle="collapse" data-target="#microcontrollers_list_home_page" class="collapsed custom_text">
+                    <strong class="custom_text">Microcontrollers</strong>
+                    <!--<button class="pull-right custom_button">Add</button>-->
+                </li>
+                <ul class="sub-menu collapse custom_sub_menu" id="microcontrollers_list_home_page">
+
+                </ul>
+
+                <!--Sensors-->
+                <li data-toggle="collapse" data-target="#sensor_list_home_page" class="collapsed custom_text">
+                    <strong class="custom_text">Sensors</strong>
+                    <!--<a href="/create/sensor"  class="pull-right custom_button">-->
+                       <!--Add-->
+                    <!--</a>-->
+
+                </li>
+                <ul class="sub-menu collapse custom_sub_menu" id="sensor_list_home_page">
+
+                </ul>
+
+                <!--Sensor Nodes-->
+                <li data-toggle="collapse" data-target="#sensor_node_home_page" class="collapsed custom_text">
+                    <strong class="custom_text">Sensor Nodes</strong>
+                </li>
+                <ul class="sub-menu collapse custom_sub_menu" id="sensor_node_home_page">
+
+                </ul>
+
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-9">
+            <!--SVG canvas -->
+            <div id="svg-container" style="position: relative; margin-left:2px; margin-top:5px; padding-left:3px"
+                 ondrop="drop(event,validateNodes)" ondragover="allowDrop(event)"></div>
+        </div>
+        <div class="col-lg-2">
+            <div id="helper_box">
+                <!--helper box-->
+
+                <div id="register-form"  class="custom_form">
+                    <div class="form-group">
+                        <input type="text" name="sensor_node_name" id="helper_form_sensor_node_name" tabindex="1"
+                               class="form-control" placeholder="Sensor Node Name" value="">
+                    </div>
+                    <div class="form-group">
+                        <select class="selectpicker" id="helper_form_type">
+                            <option>Select Sensor Node type</option>
+                            <option value="base">Gateway</option>
+                            <option value="node"> Node</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="number" name="time_interval" id="helper_form_time_interval"
+                               class="form-control" placeholder="Data Sending Interval (s)">
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" name="ssid" id="helper_form_ssid"
+                               class="form-control" placeholder="SSID of connecting Wi-Fi network (optional)">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" name="pwd" id="helper_form_pwd"
+                               class="form-control" placeholder="SSID password (optional)">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" name="description" id="helper_form_description"
+                                  placeholder="Sensor node description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <button name="save_sensor_node" id="save_sensor_node" tabindex="4"
+                                        class="form-control btn btn-register"> Save sensor Node
+                                </button>
+                                <!--<input model_name="submit" display_name="register-submit" id="register-submit" tabindex="4" class="form-control btn btn-register" value="Register Now">-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var line;
+    var line_id = 0;
+
+    var added_nodes = [];
+    var links = [];
+    var user_id;
+
+    var first_time = true;
+
+    /*
+     *  Sensor Data loading for home page of WSN App
+     *
+     * */
+        $.get( "http://localhost:8080/sensors", function( data ) {
+            for (var i=0;i<data.length;i++){
+
+                //url encoded value of given data
+                var url_encode_value = encodeURIComponent(JSON.stringify(data[i]));
+
+                var first  = '<div id="sensor_' + i + '" data-json='+url_encode_value+'  class="palette_node ui-draggable" ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" style="background-color: rgb(166, 187, 207);height: 28px;"><div class="palette_label">';
+                var last = '</div><div class="palette_port palette_port_output" style="top: 9px;"></div></div>';
+
+                //end point where data is looking front end
+                $("#sensor_list_home_page").append(first+data[i].display_name+last);
+            }
+        });
+
+    /*
+     * Microcontroller data loading to home page of WSN App
+     *
+     * */
+    $.get("http://localhost:8080/microcontroller", function (data) {
+
+        for (var i = 0; i < data.length; i++) {
+
+            //url encoded value of given data
+            var url_encode_value = encodeURIComponent(JSON.stringify(data[i]));
+
+            var first = '<div id="microcontroller_' + i + '" data-json=' + url_encode_value + '  class="palette_node ui-draggable" ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" style="background-color: rgb(228, 145, 145);height: 28px;"><div class="palette_label">';
+            var last = '</div><div class="palette_port palette_port_output" style="top: 9px;"></div></div>';
+
+            //end point where data is looking front end
+            $("#microcontrollers_list_home_page").append(first + data[i].display_name + last);
+        }
+    });
+
+    /*
+     * Sensor Node data loading to home page of WSN App
+     *
+     * */
+        $.get( "http://localhost:8080/sensornode", function( data ) {
+
+            for (var i=0;i<data.length;i++){
+
+                //url encoded value of given data
+                var url_encode_value = encodeURIComponent(JSON.stringify(data[i]));
+
+                var first  = '<div id="sensor_node_' + i + '" data-json='+url_encode_value+'  class="palette_node ui-draggable" ondragstart="dragStart(event)" ondrag="dragging(event)" draggable="true" style="background-color: rgb(192, 237, 192);height: 28px;"><div class="palette_label">';
+                var last = '</div><div class="palette_port palette_port_output" style="top: 9px;"></div></div>';
+
+                //end point where data is looking front end
+                $("#sensor_node_home_page").append(first+data[i].name+last);
+            }
+        });
+
+
+    /*
+     *     Following function can be use to drag over the canvas (currently drag is disabled )
+     *     Replace it on null
+     *
+     *     function(d,i) {
+     *           d.x += d3.event.dx
+     *           d.y += d3.event.dy
+     *           d3.select(this).attr("transform", function(d,i){
+     *               return "translate(" + [ d.x,d.y ] + ")"
+     *           })
+     *        }
+     *
+     * */
+
+    var drag_function = d3.behavior.drag()
+        .on("drag", null
+        );
+
+    /*
+     *
+     * Trough this function connecting nodes is happening (line drawing)
+     *
+     * In dragstart event start draw line
+     * In dragend  event second point is assigned as last point of mouse
+     *
+     * */
+    var draw_line = d3.behavior.drag().on("dragstart", function (d) {
+
+        console.log(event);
+
+        // Starting drawing line
+        svg_canvas.append("line")
+            .attr("id", function () {
+                console.log(line_id);
+                line_id++;
+                return 'line_' + line_id;
+            })
+            .attr("x1", d3.mouse(this)[0])
+            .attr("y1", d3.mouse(this)[1])
+            .attr("x2", d3.mouse(this)[0])
+            .attr("y2", d3.mouse(this)[1])
+            .datum({"start_id": event.toElement.id})
+            .attr("stroke", "black")
+            .attr("strok-width", 10);
+
+    }).on("dragend", function (d) {
+
+        // finish line
+        svg_canvas.select("#line_" + line_id)
+            .attr("x2", d3.mouse(this)[0])
+            .attr("y2", d3.mouse(this)[1]);
+
+        console.log(svg_canvas.select("#line_" + line_id).datum());
+        console.log(d3.event.sourceEvent.target.id);
+
+        var start_id = svg_canvas.select("#line_" + line_id).datum().start_id;
+        var end_id = d3.event.sourceEvent.target.id;
+
+        var backend_msg = {"source": start_id, "target": end_id};
+        links.push(backend_msg);
+
+        console.log(backend_msg);
+        console.log("links");
+        console.log(links);
+        console.log("create config");
+
+    });
+
+    /*
+     *  Add SVG canvas to body
+     *
+     * */
+    var svg_canvas = d3.select("#svg-container")
+        .append("svg")
+        .attr("width", 900)
+        .attr("height", 655)
+        .style("background-color", d3.rgb("#dbe1dd"))
+        .append("g");
+
+</script>
+
+<script>
+
+    /*
+     *  Drag start function for HTML5
+     *
+     * */
+    function dragStart(event) {
+        event.dataTransfer.setData("Text", event.target.getAttribute("data-json"));
+        event.dataTransfer.effectAllowed = "copy";
+        console.log("drag started");
+    }
+
+    /*
+     *  Dragging function
+     *
+     * */
+    function dragging(event) {
+        console.log("The element is dragging");
+    }
+
+    /*
+     * This function allow HTML div element that can drop any dropping element
+     *
+     * */
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    /*
+     * This function drop element to SVG canvas
+     * When drop element function trigger it take mouse position and append same element to canvas at same point
+     *
+     * */
+    function drop(event,callback) {
+        event.preventDefault();
+
+        // get url encoded values and convert those to json objects
+        var raw_data = event.dataTransfer.getData("Text");
+        var data_svg = JSON.parse(decodeURIComponent(raw_data));
+
+        console.log(data_svg);
+        console.log(event);
+
+        callback(data_svg,event);
+
+        console.log("Not display");
+    }
+
+    function config_diagram(data) {
+        var config_diagram ="";
+        if (added_nodes.length>0){
+            config_diagram = added_nodes.toString().concat(','+ data.id);
+        }else {
+            config_diagram = data.id;
+        }
+        return config_diagram.valueOf();
+    }
+
+    /*
+    * Validation microcontroller and sensors
+    *
+    * */
+    function validateNodes(data, event) {
+
+        var req_body;
+        if (first_time){
+            req_body = { "id" : 0, "code" : 200, "error_description" : null, "config_diagram" :config_diagram(data), "model_name" : "Sensor node" }
+            first_time = false;
+        }else {
+            req_body = { "id" : user_id, "code" : 200, "error_description" : null, "config_diagram" :config_diagram(data), "model_name" : "Sensor node" }
+        }
+        console.log(req_body);
+        $.ajax({
+            type: "POST",
+            url:  "http://localhost:8080/validation",
+            contentType:'application/json',
+            data: JSON.stringify(req_body),
+            success: function(res){
+                if (res.code == 200){
+                    user_id = res.id;
+                    addNode(data,event);
+                }else {
+                    alert(res.error_description);
+                }
+
+            }
+        });
+
+        return;
+    }
+
+    /*
+    * Add Node to canvas
+    *
+    * */
+    function addNode(data,event) {
+
+        // Load data to node
+        var node = svg_canvas.append("svg:g")
+            .data([{"x": event.clientX - 600, "y": event.clientY - 90, "data": data}])
+            .call(drag_function);
+
+        // draw main square
+        var single_node = node
+            .append("rect")
+            .attr("id", function (d) {
+                return d.data.class + '_' + d.data.id;
+            })
+            .attr("class", "palette_node ")
+            .attr("rx", 4)
+            .attr("stroke-width", 1)
+            .attr("stroke", d3.rgb("#999"))
+            .attr("x", event.layerX - 100)
+            .attr("y", event.layerY - 20)
+            .attr("width", 150)
+            .attr("height", 40)
+            .attr("fill", function (d) {
+                return d3.rgb(d.data.color);
+            });
+
+        // add text to node
+        var node_text = node
+            .append("text")
+            .attr("x", event.layerX - 100 + 30)
+            .attr("y", event.layerY - 20 + 18)
+            .text(function (d) {
+                console.log('sensor display_name : ' + d.data.display_name)
+                return d.data.display_name;
+            });
+
+        // add connecting point to node and add draw line functionality
+        var node_point = node
+            .append("rect")
+            .attr("id", function (d) {
+                return d.data.id;
+            })
+            .attr("x", event.layerX - 105)
+            .attr("y", event.layerY - 12)
+            .attr("width", 10)
+            .attr("height", 10)
+            .attr("rx", 3)
+            .attr("class", "port ")
+            .call(draw_line);
+        svg_canvas.selectAll('.pallete_node').on('click', function () {
+            console.log('drag');
+        });
+
+        console.log("The p element is dropped");
+
+        added_nodes.push(data.id);
+
+    }
+
+    /*
+    * Set data set ready for sensor node
+    *
+    * */
+    function sensor_node_data_set() {
+        var name = $('#helper_form_sensor_node_name').val();
+        var type = $('#helper_form_type').val();
+        var interval = $('#helper_form_time_interval').val();
+        var color  = '#c0edc0';
+
+        var internet_ssid =$('#helper_form_ssid').val();
+        var internet_password =$('#helper_form_pwd').val();
+
+        var configuration =   added_nodes.toString();
+        var description = $('#helper_form_description').val()
+
+        var sensorNode = {"name":name,"type":type, "interval":interval,"color":color,"internet_ssid":internet_ssid,"internet_password":internet_password,
+           "configuration":configuration,"description":description};
+
+        console.log(sensorNode);
+
+        $.ajax({
+            type: "POST",
+            url:  "http://localhost:8080/sensornode",
+            contentType:'application/json',
+            data: JSON.stringify(sensorNode),
+            success: function(){
+                alert("Sensor Node Added Successfully");
+            }
+        });
+
+
+    }
+    $('#save_sensor_node').click(sensor_node_data_set);
+
+
+</script>
+
+
+</body>
+
+</html>

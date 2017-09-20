@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><code>
+	<include_library>
+		
+	</include_library>
+
+	<define_macro>
+
+	</define_macro>
+	
+
+	<global_varible>
+
+	</global_varible>
+
+	<setup_code_sytax>
+	void setup(){
+	</setup_code_sytax>
+	
+	<setup_code>
+
+	</setup_code>
+
+	<setup_code_sytax>
+	}
+	</setup_code_sytax>
+
+	<setup_code_sytax>
+	void loop(){
+	</setup_code_sytax>
+	<loop_start>
+		
+	</loop_start>
+
+	<loop_middle>
+
+	</loop_middle>
+
+	<loop_end>
+
+	</loop_end>
+
+	<setup_code_sytax>
+	}
+	</setup_code_sytax>
+
+	<function_code>
+		
+	</function_code>
+
+</code>
