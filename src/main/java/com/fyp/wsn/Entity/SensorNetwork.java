@@ -17,6 +17,7 @@ public class SensorNetwork {
     private String description;
     private String avarage_distance;
 
+
     public SensorNetwork() {
     }
 

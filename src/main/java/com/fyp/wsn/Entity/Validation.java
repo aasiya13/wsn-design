@@ -15,6 +15,7 @@ public class Validation {
     private String config_diagram;
     private String communication_method;
     private String type;
+    private String node_power;
 
     public Validation() {
     }
