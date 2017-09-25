@@ -13,6 +13,7 @@ public class Validation {
     private int code;
     private String error_description;
     private String config_diagram;
+    private String communication_method;
     private String type;
 
     public Validation() {
@@ -31,6 +32,23 @@ public class Validation {
         this.error_description = error_description;
         this.config_diagram = config_diagram;
         this.type = type;
+    }
+
+    public Validation(int id, int code, String error_description, String config_diagram, String communication_method, String type) {
+        this.id = id;
+        this.code = code;
+        this.error_description = error_description;
+        this.config_diagram = config_diagram;
+        this.communication_method = communication_method;
+        this.type = type;
+    }
+
+    public String getCommunication_method() {
+        return communication_method;
+    }
+
+    public void setCommunication_method(String communication_method) {
+        this.communication_method = communication_method;
     }
 
     public int getId() {

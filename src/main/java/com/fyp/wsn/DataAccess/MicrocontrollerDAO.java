@@ -49,7 +49,6 @@ public class MicrocontrollerDAO {
         Microcontroller temp_microcontroller = microcontrollerRepository.findOne(microcontroller.getId());
         temp_microcontroller.setDisplay_name(microcontroller.getDisplay_name());
         temp_microcontroller.setModel_name(microcontroller.getModel_name());
-        temp_microcontroller.setColor(microcontroller.getColor());
         temp_microcontroller.setConfiguration(microcontroller.getConfiguration());
         microcontrollerRepository.save(temp_microcontroller);
 

@@ -49,6 +49,7 @@ public class ClientSession {
         }
 
         for (String key: temp_configuration_of_sensor.keySet()){
+            if(key=="DIGITAL_INPUT" || key == "ANALOG_INPUT") key="GPIO";
             if (this.current_usage_of_pins.keySet().contains(key)){
 
                 int value = this.current_usage_of_pins.get(key) - temp_configuration_of_sensor.get(key);

@@ -1,0 +1,17 @@
+{
+  "id": "59c33d646e5dfd2be43ba7f5",
+  "display_name": "TEMPERATURE SENSOR",
+  "model_name": "TMP66",
+  "time_required_to_one_sensor_read": "10",
+  "standby_current": "5",
+  "active_current": "10",
+  "voltage": "3.3",
+  "description": "This is used to measure temperature",
+  "configuration": "DIGITAL_INPUT-1",
+  "pin_map": "VCC-1,GND-2,DIGITAL_INPUT-3",
+  "color": null,
+  "cpp_includes": "OneWire.h,DallasTemperature.h",
+  "cpp_global": null,
+  "cpp_function": "String getTmp(){ OneWire oneWire(DIGITAL_INPUT);  DallasTemperature DS18B20(&oneWire);    float temp;  DS18B20.requestTemperatures();   temp = DS18B20.getTempCByIndex(0);     return String(temp, 3);}",
+  "cpp_initialize": null
+}

@@ -20,7 +20,17 @@ public class SensorNode {
     private String internet_ssid;
     private String internet_password;
     private  String configuration;
+    private String communication_method;
     private String description;
+
+
+    public String getCommunication_method() {
+        return communication_method;
+    }
+
+    public void setCommunication_method(String communication_method) {
+        this.communication_method = communication_method;
+    }
 
     public String getDescription() {
         return description;
@@ -62,19 +72,21 @@ public class SensorNode {
         this.interval = interval;
     }
 
-    public SensorNode(String id, String name, String type, String interval, String doc, String distance_from_base, String internet_ssid, String internet_password, String configuration) {
+
+    public SensorNode(String id, String name, String type, String interval, String color, String doc, String distance_from_base, String internet_ssid, String internet_password, String configuration, String communication_method, String description) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.interval = interval;
+        this.color = color;
         this.doc = doc;
         this.distance_from_base = distance_from_base;
         this.internet_ssid = internet_ssid;
         this.internet_password = internet_password;
         this.configuration = configuration;
+        this.communication_method = communication_method;
+        this.description = description;
     }
-
-
 
     public SensorNode() {
     }

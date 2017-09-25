@@ -1,0 +1,13 @@
+{
+  "display_name" : "ESP8266",
+  "model_name" : "ESP8266",
+  "description": "This can be used as a base station or node",
+  "configuration" : "GPIO-19,ADC-1,TX-2,RX-2,HSPI_CS-1,HSPI_MOSI-1,HSPI_MISO-1,HSPI_CLK-1,SPI_CS-1,PWM-4",
+  "pin_map"    : "16-PWM,6-PWM,5-PWM,19-PWM,1-EXT_RSTB,3-CHIP_EN,14-GPIO,10-GPIO,9-GPIO,13-GPIO,13-URXD_2,11-GPIO,12-GPIO,2-ADC,22-GPIO,22-UTXD_1,22-SPI_CS,21-GPIO,21-URXD_1,16-GPIO,16-HSPI_CS,7-GPIO,7-HSPI_MOSI,6-GPIO,6-HSPI_MISO,5-GPIO,5-HSPI_CLK,17-GPIO,17-UTXD_2,18-GPIO,19-GPIO,19-GPIO,20-GPIO,4-GPIO",
+  "code_structure_path_to_xml":"C:\\Users\\noahn\\IdeaProjects\\wsn-design-studio-master\\src\\main\\resources\\input\\testcodenode.xml",
+  "avarage_operating_current": "6",
+  "voltage":"2",
+  "number_of_sleep_level":"3",
+  "current_for_level":"0.012,0.120,1",
+  "time_for_current_levels":""
+}

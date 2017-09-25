@@ -57,8 +57,8 @@ public class ValidationService {
     public Validation getValidation(Validation validation) {
 
 
-        String [] temp_devices_ids=validation.getConfig_diagram().split(",");
-        String newly_added_device_id=temp_devices_ids[temp_devices_ids.length-1];
+        String [] connected_elements_id=validation.getConfig_diagram().split(",");
+        String newly_added_element_id=connected_elements_id[connected_elements_id.length-1];
 
         if(validation.getCode()==SUCCESSCODE){
             //handling the new user
@@ -67,8 +67,7 @@ public class ValidationService {
                 new_session_index++;
 
                 HashMap<String,Integer> initial_map=new HashMap<String,Integer>();
-                Microcontroller temp_micro=this.microcontrollerDAO.getMicrocontrollerById(newly_added_device_id);
-                temp_micro.setConfiguration(temp_micro.setConfig(temp_micro.getPin_map()));
+                Microcontroller temp_micro=this.microcontrollerDAO.getMicrocontrollerById(newly_added_element_id);
                 ClientSession new_client=new ClientSession(new_session_index,temp_micro,this.clientSessionDAO);
                 validation.setId(new_session_index);
                 this.clientSessionDAO.insertClientSession(new_client);
@@ -79,7 +78,7 @@ public class ValidationService {
 
                 int user_id=validation.getId();
                 ClientSession client_design=clientSessionDAO.getClientSessionById(user_id);
-                Sensor temp_sensor=this.sensorDAO.getSensorById(newly_added_device_id);
+                Sensor temp_sensor=this.sensorDAO.getSensorById(newly_added_element_id);
                 boolean isvalid= client_design.isvalid(temp_sensor,validation);
 
                 //update the current matrix logic

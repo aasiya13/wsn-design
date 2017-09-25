@@ -24,16 +24,22 @@ public class Sensor {
     private String description;
 
     private String configuration;
+    private String pin_map;
     private String color;
 
+    private String cpp_includes;
     private String cpp_global;
     private String cpp_function;
     private String cpp_initialize;
 
+
     public Sensor() {
     }
 
-    public Sensor(String id, String display_name, String model_name, String time_required_to_one_sensor_read, String standby_current, String active_current, String voltage, String description, String configuration, String color, String cpp_global, String cpp_function, String cpp_initialize, String cpp_includes) {
+    public Sensor(String id, String display_name, String model_name, String time_required_to_one_sensor_read,
+                  String standby_current, String active_current, String voltage, String description,
+                  String configuration, String pin_map, String color, String cpp_includes, String cpp_global,
+                  String cpp_function, String cpp_initialize) {
         this.id = id;
         this.display_name = display_name;
         this.model_name = model_name;
@@ -43,11 +49,12 @@ public class Sensor {
         this.voltage = voltage;
         this.description = description;
         this.configuration = configuration;
+        this.pin_map = pin_map;
         this.color = color;
+        this.cpp_includes = cpp_includes;
         this.cpp_global = cpp_global;
         this.cpp_function = cpp_function;
         this.cpp_initialize = cpp_initialize;
-        this.cpp_includes = cpp_includes;
     }
 
     public String getId() {
@@ -122,12 +129,28 @@ public class Sensor {
         this.configuration = configuration;
     }
 
+    public String getPin_map() {
+        return pin_map;
+    }
+
+    public void setPin_map(String pin_map) {
+        this.pin_map = pin_map;
+    }
+
     public String getColor() {
         return color;
     }
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getCpp_includes() {
+        return cpp_includes;
+    }
+
+    public void setCpp_includes(String cpp_includes) {
+        this.cpp_includes = cpp_includes;
     }
 
     public String getCpp_global() {
@@ -153,16 +176,4 @@ public class Sensor {
     public void setCpp_initialize(String cpp_initialize) {
         this.cpp_initialize = cpp_initialize;
     }
-
-    public String getCpp_includes() {
-        return cpp_includes;
-    }
-
-    public void setCpp_includes(String cpp_includes) {
-        this.cpp_includes = cpp_includes;
-    }
-
-    private String cpp_includes;
-
-
 }

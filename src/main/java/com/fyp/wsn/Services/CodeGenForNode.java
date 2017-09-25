@@ -36,15 +36,15 @@ public class  CodeGenForNode {
     //get the network configurtion
     public CodeGenForNode(String list,String node_name,MicrocontrollerDAO microcontrollerDAO,SensorNodeDAO sensorNodeDAO,SensorDAO sensorDAO,AllFunctionsDAO allFunctionsDAO) {
 
-        ArrayList<String> temp=new ArrayList<>();
+        ArrayList<String> elementsID_of_node=new ArrayList<>();
         String [] temp_devices_ids=list.split(",");
 
         for(int i=1;i<temp_devices_ids.length ;i++){
-            temp.add(temp_devices_ids[i]);
+            elementsID_of_node.add(temp_devices_ids[i]);
         }
 
         this.adjacency_node=new HashMap<>();
-        this.adjacency_node.put(temp_devices_ids[0],temp);
+        this.adjacency_node.put(temp_devices_ids[0],elementsID_of_node);
         this.Node_name=node_name;
         this.microcontrollerDAO=microcontrollerDAO;
         this.sensorNodeDAO=sensorNodeDAO;
@@ -474,21 +474,8 @@ public class  CodeGenForNode {
             String key=entry.getKey();
             ArrayList<String> value=entry.getValue();
             Microcontroller base_station=microcontrollerDAO.getMicrocontrollerById(key);
+            GenerateCppNode(key,value);
 
-
-
-            if(base_station.getSupported_lan().equals("cpp")){
-                GenerateCppNode(key,value);
-
-            }
-            else if(base_station.getSupported_lan().equals("ph")){
-
-
-            }
-            else{
-
-
-            }
 
         }
 
@@ -502,21 +489,8 @@ public class  CodeGenForNode {
             String key=entry.getKey();
             ArrayList<String> value=entry.getValue();
             Microcontroller base_station=microcontrollerDAO.getMicrocontrollerById(key);
+            GenerateCppBase(key);
 
-
-
-            if(base_station.getSupported_lan().equals("cpp")){
-                GenerateCppBase(key);
-
-            }
-            else if(base_station.getSupported_lan().equals("ph")){
-
-
-            }
-            else{
-
-
-            }
 
         }
 

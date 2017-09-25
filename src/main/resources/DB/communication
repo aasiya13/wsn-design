@@ -1,0 +1,19 @@
+{
+  "display_name" :"nRF24L01",
+  "model_name" :"nRF24L01",
+  "description":"nRF24L01 is long distance communication module.support upto 2000m away from base station",
+  "configuration":"HSPI_CS-1,HSPI_MOSI-1,HSPI_MISO-1,HSPI_CLK-1",
+
+
+  "cpp_global" :"",
+  "cpp_send":"",
+  "cpp_receive":"",
+  "cpp_setup":"",
+  "cpp_connect":"",
+  "cpp_disconnect":"",
+
+  "pin_map":""
+
+
+
+}
