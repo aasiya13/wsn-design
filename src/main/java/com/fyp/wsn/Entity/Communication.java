@@ -19,31 +19,97 @@ public class Communication {
     private String configuration;
 
 
-    private String cpp_global;
+    private String global_server;
+    private String global_client;
     private String cpp_send;
     private String cpp_receive;
-    private String cpp_setup;
+    private String client_setup;
+    private String server_setup;
     private String cpp_connect;
     private String cpp_disconnect;
+    private String includes;
+    private String helper_function;
+    private String hardware_enable;
 
     private String pin_map;
 
     public Communication() {
     }
 
-    public Communication(String id, String display_name, String model_name, String description, String configuration, String cpp_global, String cpp_send, String cpp_receive, String cpp_setup, String cpp_connect, String cpp_disconnect, String pin_map) {
+    public Communication(String id, String display_name, String model_name, String description, String configuration, String global_server, String global_client, String cpp_send, String cpp_receive, String client_setup, String server_setup, String cpp_connect, String cpp_disconnect, String includes, String helper_function, String hardware_enable, String pin_map) {
         this.id = id;
         this.display_name = display_name;
         this.model_name = model_name;
         this.description = description;
         this.configuration = configuration;
-        this.cpp_global = cpp_global;
+        this.global_server = global_server;
+        this.global_client = global_client;
         this.cpp_send = cpp_send;
         this.cpp_receive = cpp_receive;
-        this.cpp_setup = cpp_setup;
+        this.client_setup = client_setup;
+        this.server_setup = server_setup;
         this.cpp_connect = cpp_connect;
         this.cpp_disconnect = cpp_disconnect;
+        this.includes = includes;
+        this.helper_function = helper_function;
+        this.hardware_enable = hardware_enable;
         this.pin_map = pin_map;
+    }
+
+    public String getGlobal_server() {
+        return global_server;
+    }
+
+    public void setGlobal_server(String global_server) {
+        this.global_server = global_server;
+    }
+
+    public String getGlobal_client() {
+        return global_client;
+    }
+
+    public void setGlobal_client(String global_client) {
+        this.global_client = global_client;
+    }
+
+    public String getHardware_enable() {
+        return hardware_enable;
+    }
+
+    public void setHardware_enable(String hardware_enable) {
+        this.hardware_enable = hardware_enable;
+    }
+
+    public String getHelper_function() {
+        return helper_function;
+    }
+
+    public void setHelper_function(String helper_function) {
+        this.helper_function = helper_function;
+    }
+
+    public String getClient_setup() {
+        return client_setup;
+    }
+
+    public void setClient_setup(String client_setup) {
+        this.client_setup = client_setup;
+    }
+
+    public String getServer_setup() {
+        return server_setup;
+    }
+
+    public void setServer_setup(String server_setup) {
+        this.server_setup = server_setup;
+    }
+
+    public String getIncludes() {
+        return includes;
+    }
+
+    public void setIncludes(String includes) {
+        this.includes = includes;
     }
 
     public String getId() {
@@ -86,14 +152,6 @@ public class Communication {
         this.configuration = configuration;
     }
 
-    public String getCpp_global() {
-        return cpp_global;
-    }
-
-    public void setCpp_global(String cpp_global) {
-        this.cpp_global = cpp_global;
-    }
-
     public String getCpp_send() {
         return cpp_send;
     }
@@ -110,13 +168,6 @@ public class Communication {
         this.cpp_receive = cpp_receive;
     }
 
-    public String getCpp_setup() {
-        return cpp_setup;
-    }
-
-    public void setCpp_setup(String cpp_setup) {
-        this.cpp_setup = cpp_setup;
-    }
 
     public String getCpp_connect() {
         return cpp_connect;

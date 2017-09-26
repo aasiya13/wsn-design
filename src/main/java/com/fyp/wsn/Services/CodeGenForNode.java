@@ -24,32 +24,36 @@ public class  CodeGenForNode {
     private SensorNodeDAO sensorNodeDAO;
     @Autowired
     private  MicrocontrollerDAO microcontrollerDAO;
+    @Autowired
+    private CommunicationDAO communicationDAO;
 
     @Autowired AllFunctionsDAO allFunctionsDAO;
 
     private HashMap<String,ArrayList<String>> adjacency_node;
     private HashMap<String,Integer> pin_usage;
     private String Node_name;
+    private SensorNode sensorNode;
 
 
 
     //get the network configurtion
-    public CodeGenForNode(String list,String node_name,MicrocontrollerDAO microcontrollerDAO,SensorNodeDAO sensorNodeDAO,SensorDAO sensorDAO,AllFunctionsDAO allFunctionsDAO) {
+    public CodeGenForNode(SensorNode sensorNode,MicrocontrollerDAO microcontrollerDAO,SensorNodeDAO sensorNodeDAO,SensorDAO sensorDAO,AllFunctionsDAO allFunctionsDAO,CommunicationDAO communicationDAO) {
 
         ArrayList<String> elementsID_of_node=new ArrayList<>();
-        String [] temp_devices_ids=list.split(",");
+        String [] temp_devices_ids=sensorNode.getConfiguration().split(",");
 
         for(int i=1;i<temp_devices_ids.length ;i++){
             elementsID_of_node.add(temp_devices_ids[i]);
         }
-
+        this.sensorNode=sensorNode;
         this.adjacency_node=new HashMap<>();
         this.adjacency_node.put(temp_devices_ids[0],elementsID_of_node);
-        this.Node_name=node_name;
+        this.Node_name=sensorNode.getName();
         this.microcontrollerDAO=microcontrollerDAO;
         this.sensorNodeDAO=sensorNodeDAO;
         this.sensorDAO=sensorDAO;
         this.allFunctionsDAO=allFunctionsDAO;
+        this.communicationDAO=communicationDAO;
     }
 
     public String getNode_name() {
@@ -142,8 +146,18 @@ public class  CodeGenForNode {
     }
 
     private void includeHeadersCpp(ModifyXMLFile xml,ArrayList<String> list){
+        Communication communication=this.communicationDAO.getCommunicationById(this.sensorNode.getCommunication_method());
+
+        String [] include_list=communication.getIncludes().split(",");
+
         int no_of_library=1;
         for(String x : list){
+            String include_line="#include<"+x+">\n\t";
+            xml.addElement("include_library","include"+no_of_library,include_line);
+            no_of_library++;
+        }
+
+        for(String x : include_list){
             String include_line="#include<"+x+">\n\t";
             xml.addElement("include_library","include"+no_of_library,include_line);
             no_of_library++;
@@ -154,37 +168,29 @@ public class  CodeGenForNode {
 
     }
 
-    private void ccploopBase(ModifyXMLFile xml,String syntax){
+    private void ccploopBase(ModifyXMLFile xml){
 
-        String temp="String packet= "+ syntax +"\n" +
-                "    if(packet==\"\"){\n" +
-                "      \n" +
-                "     }\n" +
-                "    else{\n" +
-                "      Serial.println(packet);\n" +
-                "    }";
+        String temp="   Read();\n" +
+                    "   Attached_Time();\n";
 
-        xml.addElement("loop_start","communication_function",temp);
+        xml.addElement("loop_start","loop_call",temp);
 
     }
 
-    private void cppSetupBase(ModifyXMLFile xml,String syntax){
-        String temp="    Serial.begin(115200);\n" +syntax+"\n";
-
-
+    private void cppSetupBase(ModifyXMLFile xml){
+        String temp=" Server_Setup();\n";
         xml.addElement("setup_code","setup_wifi",temp);
-
-
     }
     private void ccploopNode(ModifyXMLFile xml){
-
-        xml.addElement("loop_start","intial_data_dtructure", " SetJSON();\n");
-
-
 
         for(Map.Entry<String,ArrayList<String>> entry: this.adjacency_node.entrySet()) {
             String Micro = entry.getKey();
             ArrayList<String> sensor_id_list= entry.getValue();
+
+            String value= "   dataMessage= \"Data: \" + DEVICE_NAME;\n" +
+                    "   dataMessage= dataMessage + \" : \";\n";
+            xml.addElement("loop_middle","Node_name", value);
+
 
             for(String x: sensor_id_list){
 
@@ -211,36 +217,30 @@ public class  CodeGenForNode {
         }
 
 
-            String value = "   if(Count%256==0) Count=1;\n" +
-        "   else Count++;\n" +
-        "   SendMessage();\n" +
-        "   delay(SENSOR_DATA_MESSURING_INTERVAL);\n" +
-        "   TKDRequest();\n" +
-        "   delay(1000);\n";
-        xml.addElement("loop_end","finalize_data_dtructure", value);
+            String value =  "   int str_len = dataMessage.length() + 1;\n" +
+                            "   dataMessage.toCharArray(sensor_data.charBuf,str_len) ;\n"+
+                            "   Send();\n" +
+                            "   delay(SENSOR_DATA_MESSURING_INTERVAL);\n" +
+                            "   Connect();\n";
+            xml.addElement("loop_end","finalize_data_dtructure", value);
 
     }
 
-    private void cppSetupNode(ModifyXMLFile xml,String syntax){
+    private void cppSetupNode(ModifyXMLFile xml){
 
-        String temp_vaue="Serial.begin(115200);\n";
-
-        temp_vaue=temp_vaue+syntax+"\n";
-
+        String temp_vaue="Client_Setup();\n";
         xml.addElement("setup_code","intial_setup",temp_vaue);
     }
 
     private void SetGlobalNodeVaribles(ModifyXMLFile xml){
 
-        String value="  char*         TKDssid;\n" +
-                "  char*         TKDpassword;\n" +
-                "  String        dataMessage;\n" +
-                "  String        temp_sensor_data;\n" +
-                "  String        temp_val;\n" +
-                "  int           TKDServerPort  = WIFI_SERVER_PORT;\n" +
-                "  int           Count=1;\n" +
-                "  IPAddress       TKDServer(BASE_STATION_IP_ADDRESS);\n" +
-                "  WiFiClient      TKDClient;";
+        String value="String dataMessage;\n" +
+                "String temp_sensor_data;\n" +
+                "IPAddress TKDServer(BASE_STATION_IP_ADDRESS);\n" +
+                "WiFiClient TKDClient;\n"+
+                "struct dataStruct{\n" +
+                "  char charBuf[50];\n" +
+                "}sensor_data;\n";
 
         xml.addElement("global_varible","General_Varible",value);
 
@@ -248,21 +248,13 @@ public class  CodeGenForNode {
 
     private void SetGlobalBaseVaribles(ModifyXMLFile xml){
 
-        String value="  char*       TKDssid;\n" +
-                "  char*       TKDpassword;\n" +
-                "  char ssid[] = SSID_INTERNET;\n" +
-                "  char pass[] = PASSWORD_INTERNET;\n" +
-                "  unsigned int localPort = UDP_TIME_LOCALPORT;\n" +
-                "  String all_data=\"\";\n" +
-                "  String Client_Message =\"\";\n" +
-                "  String JSON_Packet=\"\";\n" +
-                "  IPAddress timeServerIP;\n" +
-                "  const char* ntpServerName = NTP_SERVER_NAME;\n" +
-                "  const int NTP_PACKET_SIZE = UDP_PACKET_SIZE;\n" +
-                "  byte packetBuffer[ NTP_PACKET_SIZE];\n" +
-                "  WiFiUDP udp;  \n" +
-                "  WiFiServer  TKDServer(WIFI_SERVER_PORT);\n" +
-                "  WiFiClient  TKDClient[MAXSC];";
+        String value="String all_data=\"\";\n" +
+                "String Client_Message =\"\";\n" +
+                "IPAddress timeServerIP;\n" +
+                "byte packetBuffer[ UDP_PACKET_SIZE];\n" +
+                "WiFiUDP udp;  \n" +
+                "WiFiServer TKDServer(WIFI_SERVER_PORT);\n" +
+                "WiFiClient TKDClient[MAXSC];\n";
 
         xml.addElement("global_varible","General_Varible",value);
 
@@ -280,16 +272,16 @@ public class  CodeGenForNode {
 
             String [] keyval=x.split("-");
 
-            String pin_type=keyval[0];
+            String pin_number=keyval[0];
             String tag_name=keyval[1];
             if(avalible_pin.containsKey(tag_name)){
                 temp_list=avalible_pin.get(tag_name);
-                temp_list.add(pin_type);
+                temp_list.add(pin_number);
 
             }
             else{
                 temp_list=new ArrayList<>();
-                temp_list.add(pin_type);
+                temp_list.add(pin_number);
                 avalible_pin.put(tag_name,temp_list);
 
             }
@@ -321,35 +313,95 @@ public class  CodeGenForNode {
        return avalible_pin;
     }
 
-    public void getGeneralFunctionNode(ModifyXMLFile xml){
+    public void getCommunicationFunctionNode(ModifyXMLFile xml){
 
-        AllFunctions temp_all_function=this.allFunctionsDAO.getAllFunctionsById("ccp_node");
-        HashMap<String,String> temp_map_function=temp_all_function.getFunction_map();
+        Communication communication_method = this.communicationDAO.getCommunicationById(this.sensorNode.getCommunication_method());
 
 
-        for(Map.Entry<String,String> entry: temp_map_function.entrySet()) {
-
-            String function_name = entry.getKey();
-            String function = entry.getValue();
-            xml.addElement("function_code", function_name.substring(0, function_name.length() - 3) + "_function", function + "\n");
-        }
+        xml.addElement("function_code", "Client_Setup" + "_function", communication_method.getClient_setup() + "\n");
+        xml.addElement("function_code", "Send" + "_function", communication_method.getCpp_send() + "\n");
+        xml.addElement("function_code", "Connect" + "_function", communication_method.getCpp_connect() + "\n");
 
     }
 
 
     public void getGeneralFunctionBase(ModifyXMLFile xml){
 
-        AllFunctions temp_all_function=this.allFunctionsDAO.getAllFunctionsById("ccp_base");
-        HashMap<String,String> temp_map_function=temp_all_function.getFunction_map();
+        String Common_function_for_all="void time_setup(){\n" +
+                "  Serial.begin(115200);\n" +
+                "  WiFi.begin(SSID_INTERNET, PASSWORD_INTERNET);\n" +
+                "  while (WiFi.status() != WL_CONNECTED){\n" +
+                "    delay(500);\n" +
+                "  }\n" +
+                "  udp.begin(UDP_TIME_LOCALPORT);\n" +
+                "}\n" +
+                "\n" +
+                "void Attached_Time(){\n" +
+                " String JSON_Packet=\"\";\n" +
+                " Serial.println(all_data.substring(1,5));\n" +
+                " if(all_data.substring(1,5)==\"Data\"){\n" +
+                "    WiFi.disconnect();\n" +
+                "    time_setup();\n" +
+                "    String time_now=getTime();\n" +
+                "    JSON_Packet=\"{\\\"TIME:\\\":\\\"\";\n" +
+                "    JSON_Packet=JSON_Packet+time_now;\n" +
+                "    JSON_Packet=JSON_Packet+\"\\\",\\\"DATA\\\":\";\n" +
+                "    JSON_Packet=JSON_Packet+all_data;\n" +
+                "    JSON_Packet=JSON_Packet+\"}\";\n" +
+                "    Serial.println(JSON_Packet);\n" +
+                "    JSON_Packet=\"\";\n" +
+                "    WiFi.disconnect();\n" +
+                "    Server_Setup();          \n" +
+                "  }\n" +
+                "  else{\n" +
+                "  }\n" +
+                "  delay(POLLLING_INTERVAL);  \n" +
+                "  \n" +
+                "}\n" +
+                "\n" +
+                "unsigned long sendNTPpacket(IPAddress& address){\n" +
+                "  memset(packetBuffer, 0, UDP_PACKET_SIZE);\n" +
+                "  packetBuffer[0] = 0b11100011;\n" +
+                "  packetBuffer[1] = 0;\n" +
+                "  packetBuffer[2] = 6;\n" +
+                "  packetBuffer[3] = 0xEC;\n" +
+                "  packetBuffer[12]  = 49;\n" +
+                "  packetBuffer[13]  = 0x4E;\n" +
+                "  packetBuffer[14]  = 49;\n" +
+                "  packetBuffer[15]  = 52;\n" +
+                "  udp.beginPacket(address, 123);\n" +
+                "  udp.write(packetBuffer, UDP_PACKET_SIZE);\n" +
+                "  udp.endPacket();\n" +
+                "}\n" +
+                "\n" +
+                "String getTime(){\n" +
+                "  WiFi.hostByName(NTP_SERVER_NAME, timeServerIP); \n" +
+                "  sendNTPpacket(timeServerIP);\n" +
+                "  delay(2000);\n" +
+                "  int cb = udp.parsePacket();\n" +
+                "  if (!cb){\n" +
+                "    return \"0\";\n" +
+                "  }\n" +
+                "  else{\n" +
+                "    udp.read(packetBuffer, UDP_PACKET_SIZE);\n" +
+                "    unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);\n" +
+                "    unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);\n" +
+                "    unsigned long secsSince1900 = highWord << 16 | lowWord;\n" +
+                "    return String(secsSince1900);\n" +
+                "  }\n" +
+                "}\n";
+        xml.addElement("function_code",  "common_function", Common_function_for_all);
 
-        int i=0;
-        for(Map.Entry<String,String> entry: temp_map_function.entrySet()) {
 
-            String function_name = entry.getKey();
-            String function = entry.getValue();
-            xml.addElement("function_code",  "_function"+i, function + "\n");
-            i++;
-        }
+        Communication communication_method = this.communicationDAO.getCommunicationById(this.sensorNode.getCommunication_method());
+
+
+        xml.addElement("function_code", "Server_Setup" + "_function", communication_method.getServer_setup() + "\n");
+        xml.addElement("function_code", "Send" + "_function", communication_method.getCpp_send() + "\n");
+        xml.addElement("function_code", "Connect" + "_function", communication_method.getCpp_connect() + "\n");
+        xml.addElement("function_code", "Read" + "_function", communication_method.getCpp_receive() + "\n");
+
+
 
     }
 
@@ -359,92 +411,20 @@ public class  CodeGenForNode {
                 "#include <WiFiUdp.h>\n";
         xml.addElement("include_library", "General_include", temp);
 
+        Communication communication=this.communicationDAO.getCommunicationById(this.sensorNode.getCommunication_method());
+        String [] include_list=communication.getIncludes().split(",");
+
+        int no_of_library=0;
+        for(String x : include_list){
+            if(x == "ESP8266WiFi.h") continue;
+            String include_line="#include<"+x+">\n\t";
+            xml.addElement("include_library","include"+no_of_library,include_line);
+            no_of_library++;
+        }
+
     }
 
 
-    private String GenerateCppNode(String key,ArrayList<String> sensor_module_list){
-        ModifyXMLFile xml_structure=new ModifyXMLFile("C:\\Users\\Asela\\IdeaProjects\\wsn-design-studio\\src\\main\\resources\\input\\testcodenode.xml","d:\\testcodeoutputnode.xml");
-
-        xml_structure.getReady();
-        Microcontroller node_microcontroller=this.microcontrollerDAO.getMicrocontrollerById(key);
-        ArrayList<String> sensor_list=adjacency_node.get(key);
-
-        HandleSensorFunctions handleSensorFunctions=new HandleSensorFunctions(sensor_list,this.sensorDAO);
-        HashMap<String,ArrayList<String>> avalaible_pins=initiaizePins(node_microcontroller.getPin_map());
-        PinAllocation analyzer=new PinAllocation(avalaible_pins);
-        HashMap<String,Integer> sensor_pin;
-        int no_of_nodes=sensor_module_list.size();
-        //handling include libraries
-        ArrayList<String> list_include_libraries= getIncludeLibraryListCpp(sensor_module_list);
-        includeHeadersCpp(xml_structure,list_include_libraries);
-        // handling sensor function
-        getSensorFunctionCpp(handleSensorFunctions,sensor_module_list,xml_structure);
-
-        //handling define pins and pinmodes
-        for(String sensor_id :sensor_module_list){
-
-            Sensor temp_sensor=this.sensorDAO.getSensorById(sensor_id);
-            String pin_array=temp_sensor.getConfiguration();
-            sensor_pin=getSensorPin(pin_array);
-
-            analyzer.handleSensor(sensor_id,handleSensorFunctions,sensor_pin,xml_structure,temp_sensor.getDisplay_name());
-
-
-        }
-
-        //handing general function in a node
-        getGeneralFunctionNode(xml_structure);
-        SetGlobalNodeVaribles(xml_structure);
-        cppSetupNode(xml_structure,"client_setup();");
-        ccploopNode(xml_structure);
-
-
-        SensorNode sensorNode=this.sensorNodeDAO.getSensorNodeByName(this.getNode_name());
-        sensorNode.setDoc(xml_structure.XMLToString(xml_structure.getDoc()));
-        this.sensorNodeDAO.updateSensorNodeById(sensorNode);
-
-        try {
-            org.w3c.dom.Document xml=xml_structure.StringToXML(sensorNode.getDoc());
-            xml_structure.setDoc(xml);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-//        WriteToFile("d:\\"+this.getNode_name()+"_"+"code"+".ino",xml_structure.getText());
-
-        return null;
-    }
-
-    private String GenerateCppBase(String key){
-        ModifyXMLFile xml_structure=new ModifyXMLFile("C:\\Users\\Asela\\IdeaProjects\\wsn-design-studio\\src\\main\\resources\\input\\testcodenode.xml","d:\\testcodeoutputnode.xml");
-
-        xml_structure.getReady();
-        Microcontroller node_microcontroller=this.microcontrollerDAO.getMicrocontrollerById(key);
-
-
-        //handing general function in a node
-        getIncludeLibraryies(xml_structure);
-        getGeneralFunctionBase(xml_structure);
-        SetGlobalBaseVaribles(xml_structure);
-        cppSetupBase(xml_structure,"SetWifi();");
-        ccploopBase(xml_structure,"CollectData();");
-
-
-        SensorNode sensorNode=this.sensorNodeDAO.getSensorNodeByName(this.getNode_name());
-        sensorNode.setDoc(xml_structure.XMLToString(xml_structure.getDoc()));
-        this.sensorNodeDAO.updateSensorNodeById(sensorNode);
-
-        try {
-            org.w3c.dom.Document xml=xml_structure.StringToXML(sensorNode.getDoc());
-            xml_structure.setDoc(xml);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-     //   WriteToFile("d:\\"+this.getNode_name()+"_"+"code"+".ino",xml_structure.getText());
-
-        return null;
-    }
 
 
     private void WriteToFile(String FILENAME,String content){
@@ -473,8 +453,56 @@ public class  CodeGenForNode {
 
             String key=entry.getKey();
             ArrayList<String> value=entry.getValue();
-            Microcontroller base_station=microcontrollerDAO.getMicrocontrollerById(key);
-            GenerateCppNode(key,value);
+            //Microcontroller base_station=microcontrollerDAO.getMicrocontrollerById(key);
+            //GenerateCppNode(key,value);
+            ModifyXMLFile xml_structure=new ModifyXMLFile("C:\\Users\\noahn\\IdeaProjects\\wsn-design-studio-master\\src\\main\\resources\\input\\testcodenode.xml","C:\\Users\\noahn\\IdeaProjects\\wsn-design-studio-master\\src\\main\\resources\\output\\testcodeoutputnode.xml");
+            xml_structure.getReady();
+
+            Microcontroller node_microcontroller=this.microcontrollerDAO.getMicrocontrollerById(key);
+            ArrayList<String> sensor_list=value;
+
+            HandleSensorFunctions handleSensorFunctions=new HandleSensorFunctions(sensor_list,this.sensorDAO);
+            HashMap<String,ArrayList<String>> avalaible_pins=initiaizePins(node_microcontroller.getPin_map());
+            PinAllocation analyzer=new PinAllocation(avalaible_pins);
+            HashMap<String,Integer> sensor_pin;
+            int no_of_nodes=sensor_list.size();
+
+            //handling include libraries
+            ArrayList<String> list_include_libraries= getIncludeLibraryListCpp(sensor_list);
+            includeHeadersCpp(xml_structure,list_include_libraries);
+            // handling sensor function
+            getSensorFunctionCpp(handleSensorFunctions,sensor_list,xml_structure);
+
+            //handling define pins and pinmodes
+            for(String sensor_id :sensor_list){
+
+                Sensor temp_sensor=this.sensorDAO.getSensorById(sensor_id);
+                String pin_array=temp_sensor.getConfiguration();
+                sensor_pin=getSensorPin(pin_array);
+
+                analyzer.handleSensor(sensor_id,handleSensorFunctions,sensor_pin,xml_structure,temp_sensor.getDisplay_name());
+
+
+            }
+
+            //handing general function in a node
+            getCommunicationFunctionNode(xml_structure);
+            SetGlobalNodeVaribles(xml_structure);
+            cppSetupNode(xml_structure);
+            ccploopNode(xml_structure);
+
+
+            SensorNode sensorNode=this.sensorNodeDAO.getSensorNodeByName(this.getNode_name());
+            sensorNode.setDoc(xml_structure.XMLToString(xml_structure.getDoc()));
+            this.sensorNodeDAO.updateSensorNodeById(sensorNode);
+
+            try {
+                org.w3c.dom.Document xml=xml_structure.StringToXML(sensorNode.getDoc());
+                xml_structure.setDoc(xml);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
 
         }
@@ -489,7 +517,33 @@ public class  CodeGenForNode {
             String key=entry.getKey();
             ArrayList<String> value=entry.getValue();
             Microcontroller base_station=microcontrollerDAO.getMicrocontrollerById(key);
-            GenerateCppBase(key);
+            ModifyXMLFile xml_structure=new ModifyXMLFile("C:\\Users\\noahn\\IdeaProjects\\wsn-design-studio-master\\src\\main\\resources\\input\\testcodenode.xml","C:\\Users\\noahn\\IdeaProjects\\wsn-design-studio-master\\src\\main\\resources\\output\\testcodeoutputnode.xml");
+
+            xml_structure.getReady();
+            Microcontroller node_microcontroller=this.microcontrollerDAO.getMicrocontrollerById(key);
+
+
+            //handing general function in a node
+            getIncludeLibraryies(xml_structure);
+            getGeneralFunctionBase(xml_structure);
+            SetGlobalBaseVaribles(xml_structure);
+            cppSetupBase(xml_structure);
+            ccploopBase(xml_structure);
+
+
+            SensorNode sensorNode=this.sensorNodeDAO.getSensorNodeByName(this.getNode_name());
+            sensorNode.setDoc(xml_structure.XMLToString(xml_structure.getDoc()));
+            this.sensorNodeDAO.updateSensorNodeById(sensorNode);
+
+            try {
+                org.w3c.dom.Document xml=xml_structure.StringToXML(sensorNode.getDoc());
+                xml_structure.setDoc(xml);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //   WriteToFile("d:\\"+this.getNode_name()+"_"+"code"+".ino",xml_structure.getText());
+
 
 
         }

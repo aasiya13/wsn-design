@@ -1,9 +1,6 @@
 package com.fyp.wsn.Services;
 
-import com.fyp.wsn.DataAccess.AllFunctionsDAO;
-import com.fyp.wsn.DataAccess.MicrocontrollerDAO;
-import com.fyp.wsn.DataAccess.SensorDAO;
-import com.fyp.wsn.DataAccess.SensorNodeDAO;
+import com.fyp.wsn.DataAccess.*;
 import com.fyp.wsn.Entity.Sensor;
 import com.fyp.wsn.Entity.SensorNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,9 @@ public class SensorNodeService {
 
     @Autowired
     private AllFunctionsDAO allFunctionsDAO;
+
+    @Autowired
+    private CommunicationDAO communicationDAO;
 
     public Collection<SensorNode> getAllSensorNode(){
 
@@ -57,13 +57,12 @@ public class SensorNodeService {
 
         this.sensorNodeDAO.insertSensorNode(sensorNode);
 
-        SensorNode temp_sensornode=this.sensorNodeDAO.getSensorNodeByName(sensorNode.getName());
-        CodeGenForNode temp_code = new CodeGenForNode(sensorNode.getConfiguration(), sensorNode.getName(), this.microcontrollerDAO, this.sensorNodeDAO, this.sensorDAO,this.allFunctionsDAO);
+        CodeGenForNode temp_code = new CodeGenForNode(sensorNode, this.microcontrollerDAO, this.sensorNodeDAO, this.sensorDAO,this.allFunctionsDAO,this.communicationDAO);
 
-        if(temp_sensornode.getType().equals("node")) {
+        if(sensorNode.getType().equals("node")) {
             temp_code.CodeforNode();
         }
-        else if(temp_sensornode.getType().equals("base")) {
+        else if(sensorNode.getType().equals("base")) {
             temp_code.CodeforBase();
         }
 

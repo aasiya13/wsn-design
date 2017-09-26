@@ -1,0 +1,12 @@
+{
+  "code":"200",
+  "error_description":"",
+  "config_diagram":"",
+  "communication_method":"",
+  "type":"",
+  "node_power":""
+}
+
+sensor 59c33d646e5dfd2be43ba7f5,
+communcation 59c93c3d31870b0ab482b463,
+micro 59c72261de8e3b0ad87f6dd8

@@ -57,8 +57,6 @@ public class CommunicationDAO {
         temp_com.setCpp_connect(com.getCpp_connect());
         temp_com.setCpp_send(com.getCpp_send());
         temp_com.setCpp_receive(com.getCpp_receive());
-        temp_com.setCpp_setup(com.getCpp_setup());
-        temp_com.setCpp_global(com.getCpp_global());
         temp_com.setCpp_disconnect(com.getCpp_disconnect());
         temp_com.setPin_map(com.getPin_map());
 

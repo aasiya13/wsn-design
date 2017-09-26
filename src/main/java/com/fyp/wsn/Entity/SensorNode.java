@@ -19,7 +19,7 @@ public class SensorNode {
     private String distance_from_base;
     private String internet_ssid;
     private String internet_password;
-    private  String configuration;
+    private String configuration;
     private String communication_method;
     private String description;
 

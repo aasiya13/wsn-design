@@ -39,7 +39,6 @@ public class PinAllocation {
                 setPinMode(xml, sensor_name, overide_pin_name, assign_pin, "INPUT");
             }
         }
-
     }
 
     public String getAvaliblePin(String pintype){
@@ -52,8 +51,6 @@ public class PinAllocation {
             avalibale_pins.put(pintype,avalible_pins_list);
             return pin_number;
         }
-
-
     }
 
     public void setPinMode(ModifyXMLFile xml,String sensor_name,String tag, String pin_no, String mode){

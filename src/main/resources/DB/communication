@@ -1,4 +1,4 @@
-{
+[{
   "display_name" :"nRF24L01",
   "model_name" :"nRF24L01",
   "description":"nRF24L01 is long distance communication module.support upto 2000m away from base station",
@@ -14,4 +14,23 @@
 
   "pin_map":""
 
+},
+{
+"display_name" :"WiFi",
+"model_name" :"WiFi",
+"description":"Wifi is short distance communication module.",
+"configuration":"",
+"hardware_enable" :"true",
+"global_server" :"WiFiServer TKDServer(WIFI_SERVER_PORT);WiFiClient TKDClient[MAXSC];",
+"global_client" :"IPAddress TKDServer(BASE_STATION_IP_ADDRESS);WiFiClient TKDClient;",
+"cpp_send":"void Send(){Serial.println(dataMessage +\" - IS SENT\"); TKDClient.println(dataMessage);}",
+"cpp_receive":"void Read(){if (TKDServer.hasClient()){for(uint8_t i = 0; i < MAXSC; i++){if (!TKDClient[i] || !TKDClient[i].connected()){if(TKDClient[i]){TKDClient[i].stop();}if(TKDClient[i] = TKDServer.available()){}continue;}}WiFiClient TKDClient = TKDServer.available();TKDClient.stop();}else{}all_data= \"[\";for(uint8_t i = 0; i < MAXSC; i++){if (TKDClient[i] && TKDClient[i].connected() && TKDClient[i].available()){while(TKDClient[i].available()){Serial.print(\".\");Client_Message=\"\";Client_Message = TKDClient[i].readStringUntil('\\r');TKDClient[i].flush();all_data=all_data+ Client_Message;all_data=all_data+ \"+\";}}}all_data=all_data.substring(0,all_data.length()-1);all_data=all_data+ \"]\";}",
+"client_setup":"void Client_Setup(){Serial.begin(115200);WiFi.mode(WIFI_STA);WiFi.begin(BASE_STATION_SSID_NAME,BASE_STATION_PASSWORD);while(WiFi.status() != WL_CONNECTED){for(int i=0; i < 10; i++){delay(500);}}Connect();}",
+"server_setup":"void Server_Setup(){Serial.begin(115200);WiFi.disconnect();WiFi.mode(WIFI_AP_STA);WiFi.softAP(BASE_STATION_SSID_NAME, BASE_STATION_PASSWORD);delay(1000);IPAddress IP = WiFi.softAPIP();TKDServer.begin();TKDServer.setNoDelay(true);}",
+"cpp_connect":"void Connect(){TKDClient.stop();if(TKDClient.connect(TKDServer, WIFI_SERVER_PORT)){temp_sensor_data= \"<I'M DEVICE :\" + DEVICE_NAME;temp_sensor_data= temp_sensor_data +\" CONNECTED TO SERVER>\";}}",
+"includes":"ESP8266WiFi.h",
+"helper_function":"",
+"pin_map":""
+
 }
+]
