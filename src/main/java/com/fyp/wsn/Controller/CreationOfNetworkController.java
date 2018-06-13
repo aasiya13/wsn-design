@@ -1,10 +1,10 @@
 package com.fyp.wsn.Controller;
 
-import com.fyp.wsn.DataAccess.SensorDAO;
+//import com.fyp.wsn.DataAccess.SensorDAO;
 import com.fyp.wsn.Entity.SensorNetwork;
-import com.fyp.wsn.Entity.SensorNode;
+//import com.fyp.wsn.Entity.SensorNode;
 import com.fyp.wsn.Services.SensorNetworkService;
-import com.fyp.wsn.Services.SensorNodeService;
+//import com.fyp.wsn.Services.SensorNodeService;
 import org.jsondoc.core.annotation.Api;
 import org.jsondoc.core.annotation.ApiMethod;
 import org.jsondoc.core.annotation.ApiPathParam;

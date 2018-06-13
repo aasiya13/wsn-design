@@ -35,13 +35,22 @@ public class Validation {
         this.type = type;
     }
 
-    public Validation(int id, int code, String error_description, String config_diagram, String communication_method, String type) {
+    public Validation(int id, int code, String error_description, String config_diagram, String communication_method, String type, String node_power) {
         this.id = id;
         this.code = code;
         this.error_description = error_description;
         this.config_diagram = config_diagram;
         this.communication_method = communication_method;
         this.type = type;
+        this.node_power = node_power;
+    }
+
+    public String getNode_power() {
+        return node_power;
+    }
+
+    public void setNode_power(String node_power) {
+        this.node_power = node_power;
     }
 
     public String getCommunication_method() {

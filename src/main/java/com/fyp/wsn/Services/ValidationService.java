@@ -1,6 +1,7 @@
 package com.fyp.wsn.Services;
 
 import com.fyp.wsn.DataAccess.ClientSessionDAO;
+import com.fyp.wsn.DataAccess.CommunicationDAO;
 import com.fyp.wsn.DataAccess.MicrocontrollerDAO;
 import com.fyp.wsn.DataAccess.SensorDAO;
 import com.fyp.wsn.Entity.ClientSession;
@@ -25,6 +26,9 @@ public class ValidationService {
     private SensorDAO sensorDAO;
     @Autowired
     private ClientSessionDAO clientSessionDAO;
+
+    @Autowired
+    private CommunicationDAO communicationDAO;
 
 
     final int SUCCESSCODE=200;

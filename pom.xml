@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<display_name>wsn-design-studio</display_name>
+	<display_name>wsn-design-studio-master</display_name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>

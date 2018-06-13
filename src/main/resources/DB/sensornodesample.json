@@ -1,0 +1,11 @@
+{
+    "name":"NODE A",
+    "type": "node",
+    "interval":"40",
+    "distance_from_base":"54",
+    "internet_ssid":"",
+    "internet_password":"",
+    "configuration":"5b0d150d6f51661038fe15af,59c33d646e5dfd2be43ba7f5",
+    "communication_method":"",
+    "description":""
+}

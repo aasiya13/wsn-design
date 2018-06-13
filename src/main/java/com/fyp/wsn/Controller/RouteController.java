@@ -1,23 +1,17 @@
 package com.fyp.wsn.Controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by Asela on 5/3/2017.
  */
 
-@Controller
-
+@RestController
 public class RouteController {
-
-    @RequestMapping("/")
-    public String Index(){
-        return "home";
-    }
 
     @RequestMapping("/create/network")
     public String CreateNetwork(){
@@ -28,7 +22,7 @@ public class RouteController {
     public String about(){
         return "about";
     }
-
+    
     @RequestMapping("/create/sensor")
     public String addSensor(){
         return "addSensor";
