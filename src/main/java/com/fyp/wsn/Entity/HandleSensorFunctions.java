@@ -30,9 +30,6 @@ public class HandleSensorFunctions {
         int function_no=1;
 
         for(String sensor :sensor_id){
-
-
-
             Sensor temp_sensor = sensorDAO.getSensorById(sensor);
             String  configure_list=temp_sensor.getConfiguration();
             String [] configure_type=configure_list.split(",");

@@ -24,7 +24,6 @@ public class ClientSession {
 
     public ClientSession() {
 
-
     }
 
     public ClientSession(int id, Microcontroller micro_id,ClientSessionDAO clientSessionDAO) {
@@ -38,7 +37,7 @@ public class ClientSession {
         }
     }
 
-    public  boolean isvalid(Sensor sensor_id,Validation validation){
+    public boolean isvalid(Sensor sensor_id,Validation validation){
 
         String [] pair_list =sensor_id.getConfiguration().split(",");
 
@@ -83,8 +82,6 @@ public class ClientSession {
         }
 
         clientSessionDAOa.insertClientSession(this);
-
-
     }
 
     public int getId() {

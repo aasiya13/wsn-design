@@ -1,5 +1,6 @@
 package com.fyp.wsn.Controller;
 
+
 import com.fyp.wsn.Entity.Microcontroller;
 import com.fyp.wsn.Entity.Sensor;
 import com.fyp.wsn.Services.MicrocontrollerService;
@@ -9,6 +10,8 @@ import org.jsondoc.core.annotation.ApiMethod;
 import org.jsondoc.core.annotation.ApiPathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.logging.Logger;
+
 
 import java.util.Collection;
 
@@ -29,12 +32,15 @@ public class MicrocontrollerController {
 
     @Autowired
     private MicrocontrollerService microcontrollerService;
+     
+    private Logger LOGGER = Logger.getLogger(this.getClass().getName());
 
     //Defining the request method (this time it is GET)
     @RequestMapping(method = RequestMethod.GET)
     //For API documentation
     @ApiMethod(description = "Get all available sensors in System ")
     public Collection<Microcontroller> getAllMicrocontrollers(){
+    	LOGGER.info("Return all the microcontrollers");
         return microcontrollerService.getAllMicrocontrollers();
     }
 
@@ -69,6 +75,7 @@ public class MicrocontrollerController {
     @RequestMapping(method = RequestMethod.POST)
     @ApiMethod(description = "Add new sensors to system")
     public void insertSensorById(@RequestBody Microcontroller microcontroller){
+    	LOGGER.info("Add a new microcontroller");
         microcontrollerService.insertMicrocontroller(microcontroller);
     }
 }

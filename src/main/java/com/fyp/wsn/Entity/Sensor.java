@@ -1,13 +1,15 @@
 package com.fyp.wsn.Entity;
 
+import javax.persistence.Entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 
 /**
  * Created by Asela on 5/3/2017.
  * This class define data entity (data structure) that connect with json objects
  */
-
+@Entity 
 //corresponding document in database
 @Document(collection = "sensors")
 public class Sensor {
@@ -22,11 +24,10 @@ public class Sensor {
     private String active_current;
     private String voltage;
     private String description;
-
     private String configuration;
     private String pin_map;
     private String color;
-
+    private String microcontroller_type;
     private String cpp_includes;
     private String cpp_global;
     private String cpp_function;
@@ -36,28 +37,30 @@ public class Sensor {
     public Sensor() {
     }
 
-    public Sensor(String id, String display_name, String model_name, String time_required_to_one_sensor_read,
-                  String standby_current, String active_current, String voltage, String description,
-                  String configuration, String pin_map, String color, String cpp_includes, String cpp_global,
-                  String cpp_function, String cpp_initialize) {
-        this.id = id;
-        this.display_name = display_name;
-        this.model_name = model_name;
-        this.time_required_to_one_sensor_read = time_required_to_one_sensor_read;
-        this.standby_current = standby_current;
-        this.active_current = active_current;
-        this.voltage = voltage;
-        this.description = description;
-        this.configuration = configuration;
-        this.pin_map = pin_map;
-        this.color = color;
-        this.cpp_includes = cpp_includes;
-        this.cpp_global = cpp_global;
-        this.cpp_function = cpp_function;
-        this.cpp_initialize = cpp_initialize;
-    }
+	public Sensor(String id, String display_name, String model_name, String time_required_to_one_sensor_read,
+			String standby_current, String active_current, String voltage, String description, String configuration,
+			String pin_map, String color, String microcontroller_type, String cpp_includes, String cpp_global,
+			String cpp_function, String cpp_initialize) {
+		super();
+		this.id = id;
+		this.display_name = display_name;
+		this.model_name = model_name;
+		this.time_required_to_one_sensor_read = time_required_to_one_sensor_read;
+		this.standby_current = standby_current;
+		this.active_current = active_current;
+		this.voltage = voltage;
+		this.description = description;
+		this.configuration = configuration;
+		this.pin_map = pin_map;
+		this.color = color;
+		this.microcontroller_type = microcontroller_type;
+		this.cpp_includes = cpp_includes;
+		this.cpp_global = cpp_global;
+		this.cpp_function = cpp_function;
+		this.cpp_initialize = cpp_initialize;
+	}
 
-    public String getId() {
+	public String getId() {
         return id;
     }
 
@@ -117,7 +120,7 @@ public class Sensor {
         return description;
     }
 
-    public void setDescription(String description) {
+	public void setDescription(String description) {
         this.description = description;
     }
 
@@ -144,6 +147,14 @@ public class Sensor {
     public void setColor(String color) {
         this.color = color;
     }
+    
+    public String getMicrocontroller_type() {
+ 		return microcontroller_type;
+ 	}
+
+ 	public void setMicrocontroller_type(String microcontroller_type) {
+ 		this.microcontroller_type = microcontroller_type;
+ 	}
 
     public String getCpp_includes() {
         return cpp_includes;
@@ -176,4 +187,5 @@ public class Sensor {
     public void setCpp_initialize(String cpp_initialize) {
         this.cpp_initialize = cpp_initialize;
     }
+    
 }

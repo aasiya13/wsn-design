@@ -40,6 +40,8 @@ public class CodeGenForNode {
 
 		ArrayList<String> elementsID_of_node = new ArrayList<>();
 		String[] temp_devices_ids = sensorNode.getConfiguration().split(",");
+		
+	//	System.out.println("SensorNode Config : "+sensorNode.getConfiguration() + " SensorNOde Id : "+sensorNode.getId());
 
 		for (int i = 1; i < temp_devices_ids.length; i++) {
 			elementsID_of_node.add(temp_devices_ids[i]);
@@ -126,7 +128,9 @@ public class CodeGenForNode {
 				int function_no = entry1.getKey();
 				String function = entry1.getValue();
 				Sensor sensor_obj = this.sensorDAO.getSensorById(key);
-				xml.addElement("function_code", sensor_obj.getDisplay_name() + "function" + function_no,
+				String noSpace = sensor_obj.getDisplay_name().replaceAll("\\s","");
+			//	System.out.println(noSpace);
+				xml.addElement("function_code", noSpace + "function" + function_no,
 						function + "\n");
 
 			}
@@ -197,17 +201,19 @@ public class CodeGenForNode {
 
 				String[] temp_str = function.split("\\{");
 				String[] temp_str1 = temp_str[0].split(" ");
+		//		System.out.println("Temp : " + function);
 
 				String function_sytax = temp_str1[1] + ";";
 
-				String code_pt = "temp_sensor_data = " + function_sytax + "\n";
+				String code_pt = "temp_sensor_data=" + function_sytax + "\n";
 
 				String code_next = "   dataMessage=dataMessage+temp_sensor_data;\n"
 						+ "   dataMessage=dataMessage+\",\";";
 
 				code_next = code_pt + code_next;
-
-				xml.addElement("loop_middle", "function_" + temp_sen.getDisplay_name(), code_next + "\n");
+				String display_name = temp_sen.getDisplay_name().replaceAll("\\s","_");
+		//		System.out.println("Display name : "+display_name+" code next : "+code_next);
+				xml.addElement("loop_middle", "function_" + display_name, code_next + "\n");
 
 			}
 
@@ -246,20 +252,20 @@ public class CodeGenForNode {
 
 	}
 
-	// for micro
+	// for microcontroller
 	private HashMap<String, ArrayList<String>> initiaizePins(String pin_array) {// DIGITAL_INPUT-
 		HashMap<String, ArrayList<String>> avalible_pin = new HashMap<>();
 
 		ArrayList<String> temp_list;
-
+		System.out.println("pin_array : "+pin_array);
 		String[] pin_mapping = pin_array.split(",");
-
 		for (String x : pin_mapping) {
 
 			String[] keyval = x.split("-");
 
 			String pin_number = keyval[0];
 			String tag_name = keyval[1];
+		//	System.out.println("pin_number : "+pin_number+ " tag name : "+tag_name);
 			if (avalible_pin.containsKey(tag_name)) {
 				temp_list = avalible_pin.get(tag_name);
 				temp_list.add(pin_number);
@@ -270,9 +276,8 @@ public class CodeGenForNode {
 				avalible_pin.put(tag_name, temp_list);
 
 			}
-
 		}
-
+		
 		return avalible_pin;
 	}
 
@@ -395,10 +400,10 @@ public class CodeGenForNode {
 					"D:\\Computer Engineering\\FYP\\wsn-design-studio-master\\src\\main\\resources\\input\\testcodenode.xml",
 					"D:\\Computer Engineering\\FYP\\wsn-design-studio-master\\src\\main\\resources\\output\\testcodeoutputnode.xml");
 			xml_structure.getReady();
-
+		//	System.out.println("The Key : "+key);
 			Microcontroller node_microcontroller = this.microcontrollerDAO.getMicrocontrollerById(key);
-			ArrayList<String> sensor_list = value;
-
+			ArrayList<String> sensor_list = value;  // sensor ids 
+			
 			HandleSensorFunctions handleSensorFunctions = new HandleSensorFunctions(sensor_list, this.sensorDAO);
 			HashMap<String, ArrayList<String>> avalaible_pins = initiaizePins(node_microcontroller.getPin_map());
 			PinAllocation analyzer = new PinAllocation(avalaible_pins);
@@ -413,11 +418,14 @@ public class CodeGenForNode {
 
 			// handling define pins and pinmodes
 			for (String sensor_id : sensor_list) {
-
+				
 				Sensor temp_sensor = this.sensorDAO.getSensorById(sensor_id);
 				String pin_array = temp_sensor.getConfiguration();
 				sensor_pin = getSensorPin(pin_array);
-
+				
+				HashMap<String, ArrayList<String>> sensor_pin_avilablity = initiaizePins(temp_sensor.getPin_map());
+				analyzer.updateAvaliblePin(sensor_pin_avilablity);
+				
 				analyzer.handleSensor(sensor_id, handleSensorFunctions, sensor_pin, xml_structure,
 						temp_sensor.getDisplay_name());
 

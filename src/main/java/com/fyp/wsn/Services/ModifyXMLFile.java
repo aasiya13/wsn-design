@@ -26,17 +26,21 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import java.util.logging.Logger;
 
 public class ModifyXMLFile {
 
     private Document doc=null;
     String inputfile=null;
     String outputfile=null;
+    private Logger LOGGER;
 
     public ModifyXMLFile(String inputfile,String outputfile) {
 
         this.inputfile=inputfile;
         this.outputfile=outputfile;
+        
+        this.LOGGER = Logger.getLogger(this.getClass().getName());
     }
 
     public Document getDoc() {
@@ -49,8 +53,9 @@ public class ModifyXMLFile {
 
     public  void addElement(String code_tag_part, String tag_name, String value) {
         Node code_part = doc.getElementsByTagName(code_tag_part).item(0);
-
+       // tag_name = "Temperature";
         // append a new node to code part
+  //      LOGGER.info("tag_name : "+tag_name);
         Element new_element = doc.createElement(tag_name);
         new_element.appendChild(doc.createTextNode(value));
         code_part.appendChild(new_element);

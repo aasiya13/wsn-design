@@ -7,6 +7,7 @@ import org.jsondoc.core.annotation.ApiMethod;
 import org.jsondoc.core.annotation.ApiPathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.util.logging.Logger;
 
 import java.util.Collection;
 
@@ -37,13 +38,15 @@ public class SensorController {
     // connecting with sensor service class(where business logic is implemented)
     @Autowired
     private SensorService sensorService;
-
+    private Logger LOGGER = Logger.getLogger(this.getClass().getName());
     //Defining the request method (this time it is GET)
+  
     @RequestMapping(method = RequestMethod.GET)
     //For API documentation
     @ApiMethod(description = "Get all available sensors in System ")
     public Collection<Sensor> getAllSensors(){
-        return sensorService.getAllSensors();
+    	LOGGER.info("Return all the sensors in the database");
+    	return sensorService.getAllSensors();
     }
 
 
@@ -77,6 +80,7 @@ public class SensorController {
     @RequestMapping(method = RequestMethod.POST)
     @ApiMethod(description = "Add new sensors to system")
     public void insertSensorById(@RequestBody Sensor sensor){
+    	LOGGER.info("Add new sensors to system");
         sensorService.insertSensor(sensor);
     }
 }
