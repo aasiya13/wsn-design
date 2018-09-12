@@ -1,0 +1,82 @@
+
+	
+		
+	#include<OneWire.h>
+	#include<DallasTemperature.h>
+	#include<>
+	
+
+	
+
+	#define VCC_NEW_1 1
+	#define DIGITAL_INPUT_NEW_1 3
+	#define GND_NEW_1 2
+	
+	
+
+	
+
+	String dataMessage;
+String temp_sensor_data;
+IPAddress TKDServer(BASE_STATION_IP_ADDRESS);
+WiFiClient TKDClient;
+struct dataStruct{
+  char charBuf[50];
+}sensor_data;
+
+
+	
+	void setup(){
+	
+	
+	
+
+	pinMode(1,INPUT);
+	pinMode(3,INPUT);
+	pinMode(2,INPUT);
+	Client_Setup();
+
+
+	
+	}
+	
+
+	
+	void loop(){
+	
+	
+		
+	
+
+	
+
+	   dataMessage= "Data: " + DEVICE_NAME;
+   dataMessage= dataMessage + " : ";
+temp_sensor_data=getTmp();
+   dataMessage=dataMessage+temp_sensor_data;
+   dataMessage=dataMessage+",";
+
+
+	
+
+	   int str_len = dataMessage.length() + 1;
+   dataMessage.toCharArray(sensor_data.charBuf,str_len) ;
+   Send();
+   delay(SENSOR_DATA_MESSURING_INTERVAL);
+   Connect();
+
+
+	
+	}
+	
+
+	
+		
+	String getTmp(){ OneWire oneWire(DIGITAL_INPUT);  DallasTemperature DS18B20(&oneWire);    float temp;  DS18B20.requestTemperatures();   temp = DS18B20.getTempCByIndex(0);     return String(temp, 3);}
+
+
+
+
+
+
+

@@ -5,8 +5,11 @@ import com.fyp.wsn.Entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -440,7 +443,21 @@ public class CodeGenForNode {
 			SensorNode sensorNode = this.sensorNodeDAO.getSensorNodeByName(this.getNode_name());
 			sensorNode.setDoc(xml_structure.XMLToString(xml_structure.getDoc()));
 			this.sensorNodeDAO.updateSensorNodeById(sensorNode);
-
+			System.out.println("The Code Node : "+sensorNode.getDoc());
+			System.out.println("XML code get Text : "+xml_structure.getText());
+			PrintWriter writer;
+			try {
+				writer = new PrintWriter("D:/Computer Engineering/FYP/wsn-design-studio-master/src/main/java/com/fyp/wsn/Controller/abc.txt", "UTF-8");
+				writer.println(xml_structure.getText());
+				writer.close();
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			try {
 				org.w3c.dom.Document xml = xml_structure.StringToXML(sensorNode.getDoc());
 				xml_structure.setDoc(xml);
@@ -477,7 +494,7 @@ public class CodeGenForNode {
 			SensorNode sensorNode = this.sensorNodeDAO.getSensorNodeByName(this.getNode_name());
 			sensorNode.setDoc(xml_structure.XMLToString(xml_structure.getDoc()));
 			this.sensorNodeDAO.updateSensorNodeById(sensorNode);
-
+			System.out.println("The Code Base : "+sensorNode.getDoc());
 			try {
 				org.w3c.dom.Document xml = xml_structure.StringToXML(sensorNode.getDoc());
 				xml_structure.setDoc(xml);
