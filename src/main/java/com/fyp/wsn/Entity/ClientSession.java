@@ -35,6 +35,8 @@ public class ClientSession {
             String [] key_value=x.split("-");
             current_usage_of_pins.put(key_value[0],Integer.parseInt(key_value[1]));
         }
+        
+        System.out.println("Session Initiate..."+ "microcontroller Id : "+micro_id.getDisplay_name());
     }
 
     public boolean isvalid(Sensor sensor_id,Validation validation){
@@ -55,11 +57,12 @@ public class ClientSession {
                 if(value <0 ) {
 
                     validation.setError_description("Running Out of "+key +" Pins");
+                    System.out.println("Session Failed");
                     return false;
                 }
             }
         }
-
+        System.out.println("Session Valid");
         return true;
     }
 

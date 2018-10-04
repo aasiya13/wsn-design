@@ -120,11 +120,6 @@ public class CodeGenForNetwork {
         return temp;
     }
 
-
-
-
-
-
     private String setDEVICE_NAME(String name){
 
         String temp= "#define DEVICE_NAME \""+name+"\"\n";
@@ -180,8 +175,6 @@ public class CodeGenForNetwork {
 
         }
 
-
-
     }
     public void finalizedNetworkCode(){
         String full_code=null;
@@ -196,7 +189,7 @@ public class CodeGenForNetwork {
             int No_of_nodes = value.size();
             SensorNode base_station = sensorNodeDAO.getSensorNodeById(key);
 
-            ModifyXMLFile xml_structure=new ModifyXMLFile("C:\\Users\\Asela\\IdeaProjects\\wsn-design-studio\\src\\main\\resources\\input\\testcodenode.xml","d:\\testcodeoutputnode.xml");
+            ModifyXMLFile xml_structure=new ModifyXMLFile("D:\\Computer_Engineering\\FYP\\wsn-design-studio\\src\\main\\resources\\input\\testcodenode.xml","d:\\testcodeoutputnode.xml");
             try {
                 xml_structure.setDoc(xml_structure.StringToXML(base_station.getDoc()));
             } catch (Exception e) {
@@ -214,7 +207,7 @@ public class CodeGenForNetwork {
             xml_structure.addElement("define_macro","define_poll"+base_station_id,setPOLLLING_INTERVAL(base_station.getInterval()));
 
 
-            WriteToFile("C:\\Users\\Asela\\IdeaProjects\\wsn-design-studio\\src\\main\\resources\\static\\output\\"+base_station.getName()+"_"+"code"+".ino",xml_structure.getText());
+            WriteToFile("D:\\Computer_Engineering\\FYP\\wsn-design-studio\\src\\main\\resources\\static\\output\\"+base_station.getName()+"_"+"code"+".ino",xml_structure.getText());
 
             for(String sensor_node_id :value){
 
@@ -222,7 +215,7 @@ public class CodeGenForNetwork {
 
                 SensorNode node = sensorNodeDAO.getSensorNodeById(sensor_node_id);
 
-                xml_structure=new ModifyXMLFile("C:\\Users\\Asela\\IdeaProjects\\wsn-design-studio\\src\\main\\resources\\input\\testcodenode.xml","d:\\testcodeoutputnode.xml");
+                xml_structure=new ModifyXMLFile("D:\\Computer_Engineering\\FYP\\wsn-design-studio\\src\\main\\resources\\input\\testcodenode.xml","d:\\testcodeoutputnode.xml");
                 try {
                     xml_structure.setDoc(xml_structure.StringToXML(node.getDoc()));
                 } catch (Exception e) {
@@ -238,7 +231,7 @@ public class CodeGenForNetwork {
                 xml_structure.addElement("define_macro","define_poll"+base_station_id+""+node_id,setSENSOR_DATA_MESSURING_INTERVAL(Integer.parseInt(node.getInterval())));
 
                 node_id++;
-                WriteToFile("C:\\Users\\Asela\\IdeaProjects\\wsn-design-studio\\src\\main\\resources\\static\\output\\"+node.getName()+"_"+"code"+".ino",xml_structure.getText());
+                WriteToFile("D:\\Computer_Engineering\\FYP\\wsn-design-studio\\src\\main\\resources\\static\\output\\"+node.getName()+"_"+"code"+".ino",xml_structure.getText());
 
             }
             base_station_id++;

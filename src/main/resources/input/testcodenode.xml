@@ -11,6 +11,10 @@
 	<global_varible>
 
 	</global_varible>
+	
+	<additional_code>
+	
+	</additional_code>
 
 	<setup_code_sytax>
 	void setup(){

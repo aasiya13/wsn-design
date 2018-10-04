@@ -75,11 +75,11 @@ public class ValidationService {
                 ClientSession new_client=new ClientSession(new_session_index,temp_micro,this.clientSessionDAO);
                 validation.setId(new_session_index);
                 this.clientSessionDAO.insertClientSession(new_client);
-
+                System.out.println("Handling New User..");
             }
             //handling the currently working user
             else{
-
+            	System.out.println("Handling Current User..");
                 int user_id=validation.getId();
                 ClientSession client_design=clientSessionDAO.getClientSessionById(user_id);
                 Sensor temp_sensor=this.sensorDAO.getSensorById(newly_added_element_id);
@@ -87,12 +87,13 @@ public class ValidationService {
 
                 //update the current matrix logic
                 if(isvalid==true){
+                	System.out.println("Validation is true");
                     client_design.updateCurrentPinConfiguration(temp_sensor,validation,this.clientSessionDAO);
                 }
 
                 //return the error of conneccting
                 else {
-
+                	System.out.println("Validation is failed");
                     return validation;
 
                 }

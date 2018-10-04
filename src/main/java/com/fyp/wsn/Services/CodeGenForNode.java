@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Nadith Premaratne on 14/05/2017.
@@ -133,8 +135,10 @@ public class CodeGenForNode {
 				Sensor sensor_obj = this.sensorDAO.getSensorById(key);
 				String noSpace = sensor_obj.getDisplay_name().replaceAll("\\s","");
 			//	System.out.println(noSpace);
-				xml.addElement("function_code", noSpace + "function" + function_no,
+			//	System.out.println("Funciton === /n "+ function);
+				xml.addElement("additional_code", noSpace + "function" + function_no,
 						function + "\n");
+				
 
 			}
 
@@ -160,15 +164,19 @@ public class CodeGenForNode {
 
 		int no_of_library = 1;
 		for (String x : list) {
-			String include_line = "#include<" + x + ">\n\t";
-			xml.addElement("include_library", "include" + no_of_library, include_line);
-			no_of_library++;
+			if(!x.equals("")){
+				String include_line = "#include<" + x + ">\n\t";
+				xml.addElement("include_library", "include" + no_of_library, include_line);
+				no_of_library++;
+			}
 		}
 
 		for (String x : include_list) {
-			String include_line = "#include<" + x + ">\n\t";
-			xml.addElement("include_library", "include" + no_of_library, include_line);
-			no_of_library++;
+			if(!x.equals("")){
+				String include_line = "#include<" + x + ">\n\t";
+				xml.addElement("include_library", "include" + no_of_library, include_line);
+				no_of_library++;
+			}
 		}
 
 		xml.toString("include_library");
@@ -176,16 +184,20 @@ public class CodeGenForNode {
 	}
 
 	private void ccploopBase(ModifyXMLFile xml) {
-
-		String temp = "   Read();\n" + "   Attached_Time();\n";
-
-		xml.addElement("loop_start", "loop_call", temp);
-
+		Communication communication = this.communicationDAO
+				.getCommunicationById(this.sensorNode.getCommunication_method());
+		//String temp = "   Read();\n" + "   Attached_Time();\n";
+	//	xml.addElement("loop_start", "loop_call", temp);
+		xml.addElement("loop_middle", "loop_call", communication.getCpp_connect());
 	}
 
 	private void cppSetupBase(ModifyXMLFile xml) {
-		String temp = " Server_Setup();\n";
-		xml.addElement("setup_code", "setup_wifi", temp);
+		Communication communication = this.communicationDAO
+				.getCommunicationById(this.sensorNode.getCommunication_method());
+	//	String temp = " Server_Setup();\n";
+	//	xml.addElement("setup_code", "setup_wifi", temp);
+		
+		xml.addElement("setup_code", "loop_call", communication.getClient_setup());
 	}
 
 	private void ccploopNode(ModifyXMLFile xml) {
@@ -195,7 +207,7 @@ public class CodeGenForNode {
 			ArrayList<String> sensor_id_list = entry.getValue();
 
 			String value = "   dataMessage= \"Data: \" + DEVICE_NAME;\n" + "   dataMessage= dataMessage + \" : \";\n";
-			xml.addElement("loop_middle", "Node_name", value);
+	//		xml.addElement("loop_middle", "Node_name", value);
 
 			for (String x : sensor_id_list) {
 
@@ -204,10 +216,20 @@ public class CodeGenForNode {
 
 				String[] temp_str = function.split("\\{");
 				String[] temp_str1 = temp_str[0].split(" ");
-		//		System.out.println("Temp : " + function);
-
+//				System.out.println("Temp_Str INIT"); 
+//				for (String m : temp_str){
+//					 System.out.println(m);
+//				 }
+//				System.out.println("Temp_Str CLOSE"); 
+//				
+//				System.out.println("Temp_Str1 INIT"); 
+//				for (String y : temp_str1){
+//					 System.out.println(y);
+//				 }
+//				System.out.println("Temp_Str1 CLOSE");
 				String function_sytax = temp_str1[1] + ";";
-
+				
+			//	String function_sytax = temp_str1[0] + ";";
 				String code_pt = "temp_sensor_data=" + function_sytax + "\n";
 
 				String code_next = "   dataMessage=dataMessage+temp_sensor_data;\n"
@@ -216,7 +238,12 @@ public class CodeGenForNode {
 				code_next = code_pt + code_next;
 				String display_name = temp_sen.getDisplay_name().replaceAll("\\s","_");
 		//		System.out.println("Display name : "+display_name+" code next : "+code_next);
-				xml.addElement("loop_middle", "function_" + display_name, code_next + "\n");
+			//	xml.addElement("loop_middle", "function_" + display_name, code_next + "\n");
+				xml.addElement("loop_middle","function", function_sytax);
+				
+				// adding global variables in each sensor 
+				String globalVariable = temp_sen.getCpp_global();
+				xml.addElement("global_varible","Global_Variable", globalVariable);
 
 			}
 
@@ -225,33 +252,103 @@ public class CodeGenForNode {
 		String value = "   int str_len = dataMessage.length() + 1;\n"
 				+ "   dataMessage.toCharArray(sensor_data.charBuf,str_len) ;\n" + "   Send();\n"
 				+ "   delay(SENSOR_DATA_MESSURING_INTERVAL);\n" + "   Connect();\n";
-		xml.addElement("loop_end", "finalize_data_dtructure", value);
+	//	xml.addElement("loop_end", "finalize_data_dtructure", value);
+		Communication communication = this.communicationDAO
+				.getCommunicationById(this.sensorNode.getCommunication_method());
+	//	System.out.println("CPP LOOP : "+ communication.getCpp_connect().replaceAll("\\s","") );
+		xml.addElement("loop_start", "loop_starting", communication.getCpp_connect());
 
 	}
 
 	private void cppSetupNode(ModifyXMLFile xml) {
+		Communication communication = this.communicationDAO
+				.getCommunicationById(this.sensorNode.getCommunication_method());
+		String addDataVar = addSenosrDataToCode(communication.getServer_setup());
+		
+		xml.addElement("setup_code", "communication_setup", addDataVar);
+	//	String temp_vaue = "Client_Setup();\n";
+	//	xml.addElement("setup_code", "intial_setup", temp_vaue);
+	}
+	
+	private String addSenosrDataToCode(String code){
+		String rest = "";
+		for (Map.Entry<String, ArrayList<String>> entry : this.adjacency_node.entrySet()) {
+			String Micro = entry.getKey();
+			ArrayList<String> sensor_id_list = entry.getValue();
 
-		String temp_vaue = "Client_Setup();\n";
-		xml.addElement("setup_code", "intial_setup", temp_vaue);
+			for (String x : sensor_id_list) {
+
+				Sensor temp_sen = this.sensorDAO.getSensorById(x);
+				String function = temp_sen.getCpp_function();
+
+				String[] temp_str = function.split("\\{");
+				String[] temp_str1 = temp_str[0].split(" ");
+
+				String function_sytax = temp_str1[1] + ";";
+				rest = code.replaceAll("this works as well", "Sensor Data : \\\"+"+temp_str1[1]);
+
+			}
+		      
+		}   
+			return rest;		 
+	}
+	
+	private void cppInitialize(ModifyXMLFile xml){
+		for (Map.Entry<String, ArrayList<String>> entry : this.adjacency_node.entrySet()) {
+			String Micro = entry.getKey();
+			ArrayList<String> sensor_id_list = entry.getValue();
+
+			for (String x : sensor_id_list) {
+
+				Sensor temp_sen = this.sensorDAO.getSensorById(x);
+				String function = temp_sen.getCpp_initialize();
+				
+		//		System.out.println("Initialized Funciton : ");
+				System.out.println(function);
+	//			System.out.println("End of Initialized function");
+			//	String[] temp_str = function.split("\\{");
+			//	String[] temp_str1 = temp_str[0].split(" ");
+		//		System.out.println("Temp : " + function);
+
+//				String function_sytax = temp_str1[1] + ";";
+//
+//				String code_pt = "temp_sensor_data=" + function_sytax + "\n";
+//
+//				String code_next = "   dataMessage=dataMessage+temp_sensor_data;\n"
+//						+ "   dataMessage=dataMessage+\",\";";
+//
+//				code_next = code_pt + code_next;
+//				String display_name = temp_sen.getDisplay_name().replaceAll("\\s","_");
+		//		System.out.println("Display name : "+display_name+" code next : "+code_next);
+				xml.addElement("setup_code", "function_" , function + "\n");
+
+			}
+		}
+
+		
 	}
 
 	private void SetGlobalNodeVaribles(ModifyXMLFile xml) {
+		Communication communication = this.communicationDAO
+				.getCommunicationById(this.sensorNode.getCommunication_method());
+//		String value = "String dataMessage;\n" + "String temp_sensor_data;\n"
+//				+ "IPAddress TKDServer(BASE_STATION_IP_ADDRESS);\n" + "WiFiClient TKDClient;\n" + "struct dataStruct{\n"
+//				+ "  char charBuf[50];\n" + "}sensor_data;\n";
 
-		String value = "String dataMessage;\n" + "String temp_sensor_data;\n"
-				+ "IPAddress TKDServer(BASE_STATION_IP_ADDRESS);\n" + "WiFiClient TKDClient;\n" + "struct dataStruct{\n"
-				+ "  char charBuf[50];\n" + "}sensor_data;\n";
-
-		xml.addElement("global_varible", "General_Varible", value);
+		xml.addElement("global_varible", "General_Varible", communication.getGlobal_server());
 
 	}
 
 	private void SetGlobalBaseVaribles(ModifyXMLFile xml) {
+		Communication communication = this.communicationDAO
+				.getCommunicationById(this.sensorNode.getCommunication_method());
 
 		String value = "String all_data=\"\";\n" + "String Client_Message =\"\";\n" + "IPAddress timeServerIP;\n"
 				+ "byte packetBuffer[ UDP_PACKET_SIZE];\n" + "WiFiUDP udp;  \n"
 				+ "WiFiServer TKDServer(WIFI_SERVER_PORT);\n" + "WiFiClient TKDClient[MAXSC];\n";
 
-		xml.addElement("global_varible", "General_Varible", value);
+	//	xml.addElement("global_varible", "General_Varible", value);
+		xml.addElement("global_varible", "General_Varible", communication.getGlobal_client());
 
 	}
 
@@ -310,10 +407,11 @@ public class CodeGenForNode {
 
 		Communication communication_method = this.communicationDAO
 				.getCommunicationById(this.sensorNode.getCommunication_method());
-
-		xml.addElement("function_code", "Client_Setup" + "_function", communication_method.getClient_setup() + "\n");
-		xml.addElement("function_code", "Send" + "_function", communication_method.getCpp_send() + "\n");
-		xml.addElement("function_code", "Connect" + "_function", communication_method.getCpp_connect() + "\n");
+		
+		xml.addElement("additional_code", "Client_Setup" + "_function", communication_method.getHelper_function() + "\n");
+//		xml.addElement("function_code", "Client_Setup" + "_function", communication_method.getClient_setup() + "\n");
+//		xml.addElement("function_code", "Send" + "_function", communication_method.getCpp_send() + "\n");
+//		xml.addElement("function_code", "Connect" + "_function", communication_method.getCpp_connect() + "\n");
 
 	}
 
@@ -415,9 +513,9 @@ public class CodeGenForNode {
 
 			// handling include libraries
 			ArrayList<String> list_include_libraries = getIncludeLibraryListCpp(sensor_list);
-			includeHeadersCpp(xml_structure, list_include_libraries);
+				includeHeadersCpp(xml_structure, list_include_libraries);
 			// handling sensor function
-			getSensorFunctionCpp(handleSensorFunctions, sensor_list, xml_structure);
+				getSensorFunctionCpp(handleSensorFunctions, sensor_list, xml_structure);
 
 			// handling define pins and pinmodes
 			for (String sensor_id : sensor_list) {
@@ -433,7 +531,8 @@ public class CodeGenForNode {
 						temp_sensor.getDisplay_name());
 
 			}
-
+			
+			cppInitialize(xml_structure);
 			// handing general function in a node
 			getCommunicationFunctionNode(xml_structure);
 			SetGlobalNodeVaribles(xml_structure);
@@ -478,15 +577,15 @@ public class CodeGenForNode {
 			ArrayList<String> value = entry.getValue();
 			Microcontroller base_station = microcontrollerDAO.getMicrocontrollerById(key);
 			ModifyXMLFile xml_structure = new ModifyXMLFile(
-					"C:\\Users\\noahn\\IdeaProjects\\wsn-design-studio-master\\src\\main\\resources\\input\\testcodenode.xml",
-					"C:\\Users\\noahn\\IdeaProjects\\wsn-design-studio-master\\src\\main\\resources\\output\\testcodeoutputnode.xml");
+					"D:\\Computer Engineering\\FYP\\wsn-design-studio-master\\src\\main\\resources\\input\\testcodenode.xml",
+					"D:\\Computer Engineering\\FYP\\wsn-design-studio-master\\src\\main\\resources\\output\\testcodeoutputnode.xml");
 
 			xml_structure.getReady();
 			Microcontroller node_microcontroller = this.microcontrollerDAO.getMicrocontrollerById(key);
 
 			// handing general function in a node
 			getIncludeLibraryies(xml_structure);
-			getGeneralFunctionBase(xml_structure);
+			//getGeneralFunctionBase(xml_structure);
 			SetGlobalBaseVaribles(xml_structure);
 			cppSetupBase(xml_structure);
 			ccploopBase(xml_structure);
@@ -503,6 +602,18 @@ public class CodeGenForNode {
 			}
 
 			// WriteToFile("d:\\"+this.getNode_name()+"_"+"code"+".ino",xml_structure.getText());
+			PrintWriter writer;
+			try {
+				writer = new PrintWriter("D:/Computer Engineering/FYP/wsn-design-studio-master/src/main/java/com/fyp/wsn/Controller/abc.txt", "UTF-8");
+				writer.println(xml_structure.getText());
+				writer.close();
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 		}
 

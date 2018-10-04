@@ -39,8 +39,6 @@ public class SensorNodeService {
     public SensorNode getSensorNodeById(String id){
 
         return this.sensorNodeDAO.getSensorNodeById(id);
-
-
     }
 
     public void removeSensorNodeById(String id) {
